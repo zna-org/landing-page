@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -167,8 +166,20 @@
     /* CONTACT */
     #contact{padding:100px 24px;}
     .contact-grid{margin-top:58px;display:grid;grid-template-columns:3fr 2fr;gap:60px;align-items:start;}
-    .tally-wrap{border-radius:16px;overflow:hidden;background:var(--card);border:1px solid var(--border);}
-    .tally-wrap iframe{display:block;width:100%;border:none;min-height:520px;}
+    .contact-form{display:flex;flex-direction:column;gap:18px;}
+    .form-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+    .form-field{display:flex;flex-direction:column;gap:8px;}
+    .form-field label{font-size:.75rem;font-weight:600;color:var(--muted2);letter-spacing:.5px;text-transform:uppercase;}
+    .form-field input,.form-field textarea{background:var(--card);border:1px solid var(--border2);border-radius:10px;padding:13px 15px;color:var(--text);font-size:.92rem;font-family:inherit;outline:none;transition:border-color .2s,box-shadow .2s;width:100%;}
+    .form-field input::placeholder,.form-field textarea::placeholder{color:var(--muted);}
+    .form-field input:focus,.form-field textarea:focus{border-color:rgba(0,230,118,.38);box-shadow:0 0 0 3px rgba(0,230,118,.07);}
+    .form-field textarea{resize:vertical;min-height:118px;}
+    .btn-submit{display:inline-flex;align-items:center;gap:9px;background:linear-gradient(135deg,var(--green),var(--blue));color:#000;font-weight:800;font-size:.95rem;padding:14px 28px;border-radius:11px;border:none;cursor:pointer;transition:opacity .2s,transform .2s,box-shadow .2s;box-shadow:0 6px 22px rgba(0,230,118,.2);align-self:flex-start;}
+    .btn-submit:hover{opacity:.9;transform:translateY(-2px);box-shadow:0 10px 30px rgba(0,230,118,.3);}
+    .btn-submit:disabled{opacity:.5;cursor:not-allowed;transform:none;}
+    .form-msg{font-size:.88rem;padding:12px 16px;border-radius:10px;display:none;}
+    .form-msg.success{display:block;background:rgba(0,230,118,.1);border:1px solid rgba(0,230,118,.25);color:var(--green);}
+    .form-msg.error{display:block;background:rgba(255,80,80,.08);border:1px solid rgba(255,80,80,.2);color:#ff6b6b;}
     .contact-cards{display:flex;flex-direction:column;gap:12px;}
     .ci-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:20px;display:flex;align-items:flex-start;gap:15px;transition:border-color .2s;}
     .ci-card:hover{border-color:var(--border2);}
@@ -480,8 +491,20 @@
       <p class="s-sub" data-i18n="ct_sub">Book a free demo or ask us anything. We respond within 24 hours in Czech, English, or Russian.</p>
     </div>
     <div class="contact-grid">
-      <div class="tally-wrap reveal">
-        <iframe src="https://tally.so/embed/LZGbMJ?alignLeft=1&hideTitle=1&transparentBackground=1&dynamicHeight=1" loading="lazy" title="GarageOS Contact Form"></iframe>
+      <div class="contact-form reveal">
+        <div class="form-row">
+          <div class="form-field"><label data-i18n="cf_name">Full Name</label><input id="cf_name" type="text" placeholder="Jan Nov&#225;k"/></div>
+          <div class="form-field"><label data-i18n="cf_email">Email</label><input id="cf_email" type="email" placeholder="jan@servis.cz"/></div>
+        </div>
+        <div class="form-row">
+          <div class="form-field"><label data-i18n="cf_garage">Garage Name</label><input id="cf_garage" type="text" placeholder="AutoServis Praha"/></div>
+          <div class="form-field"><label data-i18n="cf_team">Team Size</label><input id="cf_team" type="text" placeholder="1&#8211;3 / 4+"/></div>
+        </div>
+        <div class="form-field"><label data-i18n="cf_msg">Message</label><textarea id="cf_msg" placeholder="Tell us about your garage..."></textarea></div>
+        <div class="form-msg" id="formMsg"></div>
+        <button class="btn-submit" id="formBtn" onclick="submitForm()">
+          <span data-i18n="cf_send">Send Message</span><span>&#8594;</span>
+        </button>
       </div>
       <div class="contact-cards reveal">
         <div class="ci-card"><div class="ci-ico">&#x1F4E7;</div><div><div class="ci-label" data-i18n="ci_email">Email</div><div class="ci-value">hello@garageos.io</div></div></div>
@@ -501,6 +524,61 @@
 </footer>
 
 <script>
+var N8N_WEBHOOK = 'https://n8n.plovec.eu/webhook-test/c664de54-8b0b-42c0-ace8-ce10889a758e';
+
+function submitForm() {
+  var name    = document.getElementById('cf_name').value.trim();
+  var email   = document.getElementById('cf_email').value.trim();
+  var garage  = document.getElementById('cf_garage').value.trim();
+  var team    = document.getElementById('cf_team').value.trim();
+  var message = document.getElementById('cf_msg').value.trim();
+  var btn     = document.getElementById('formBtn');
+  var msg     = document.getElementById('formMsg');
+
+  if (!name || !email) {
+    msg.className = 'form-msg error';
+    msg.textContent = T[curLang].cf_err_required || 'Please fill in your name and email.';
+    return;
+  }
+
+  btn.disabled = true;
+  msg.className = 'form-msg';
+  msg.textContent = '';
+
+  fetch(N8N_WEBHOOK, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      name:       name,
+      email:      email,
+      garage:     garage,
+      team_size:  team,
+      message:    message,
+      submitted_at: new Date().toISOString(),
+      language:   curLang
+    })
+  })
+  .then(function(res) {
+    if (res.ok) {
+      msg.className = 'form-msg success';
+      msg.textContent = T[curLang].cf_success || 'Message sent! We\'ll be in touch within 24 hours.';
+      document.getElementById('cf_name').value = '';
+      document.getElementById('cf_email').value = '';
+      document.getElementById('cf_garage').value = '';
+      document.getElementById('cf_team').value = '';
+      document.getElementById('cf_msg').value = '';
+    } else {
+      throw new Error('Server error');
+    }
+  })
+  .catch(function() {
+    msg.className = 'form-msg error';
+    msg.textContent = T[curLang].cf_error || 'Something went wrong. Please try again or email us directly.';
+  })
+  .finally(function() {
+    btn.disabled = false;
+  });
+}
 var T = {
   en: {
     nav_features:"Features", nav_how:"How it works", nav_pricing:"Pricing", nav_contact:"Contact",
@@ -536,7 +614,9 @@ var T = {
     pr_note:"All plans include a 14-day free trial. No credit card required.",
     ct_label:"Contact", ct_title:"Let\u2019s talk.", ct_sub:"Book a free demo or ask us anything. We respond within 24 hours in Czech, English, or Russian.",
     cf_name:"Full Name", cf_email:"Email", cf_garage:"Garage Name", cf_team:"Team Size", cf_msg:"Message", cf_send:"Send Message",
-    tally_msg:"Ready to get started? Click below to open the contact form.", tally_note:"Opens a short form \u2014 takes under 2 minutes",
+    cf_err_required:"Please fill in your name and email.",
+    cf_success:"Message sent! We\u2019ll be in touch within 24 hours.",
+    cf_error:"Something went wrong. Please try again or email us directly.",
     ci_email:"Email", ci_resp:"Response Time", ci_resp_v:"Within 24 hours", ci_lang:"Languages", ci_demo:"Free Demo", ci_demo_v:"30-minute walkthrough, no pressure",
     footer_copy:"\u00a9 2026 GarageOS. All rights reserved.", footer_privacy:"Privacy Policy", footer_terms:"Terms of Use"
   },
@@ -574,7 +654,9 @@ var T = {
     pr_note:"V\u0161echny pl\u00e1ny zahrnuj\u00ed 14denn\u00ed bezplatnou zku\u0161ebn\u00ed dobu.",
     ct_label:"Kontakt", ct_title:"Pojďme si promluvit.", ct_sub:"Rezervujte si bezplatn\u00e9 demo nebo se n\u00e1s zeptejte na cokoliv.",
     cf_name:"Cel\u00e9 jm\u00e9no", cf_email:"E-mail", cf_garage:"N\u00e1zev servisu", cf_team:"Velikost t\u00fdmu", cf_msg:"Zpr\u00e1va", cf_send:"Odeslat zpr\u00e1vu",
-    tally_msg:"Chcete za\u010d\u00edt? Klikn\u011bte n\u00ed\u017ee a otev\u0159ete kontaktn\u00ed formul\u00e1\u0159.", tally_note:"Kr\u00e1tk\u00fd formul\u00e1\u0159 \u2014 zabere m\u00e9n\u011b ne\u017e 2 minuty",
+    cf_err_required:"Vypl\u0148te pros\u00edm jm\u00e9no a e-mail.",
+    cf_success:"Zpr\u00e1va ode\u0161lana! Ozveme se do 24 hodin.",
+    cf_error:"N\u011bco se pokazilo. Zkuste to znovu nebo n\u00e1s kontaktujte p\u0159\u00edmo.",
     ci_email:"E-mail", ci_resp:"Doba odezvy", ci_resp_v:"Do 24 hodin", ci_lang:"Jazyky", ci_demo:"Demo zdarma", ci_demo_v:"30 minut, bez z\u00e1vazk\u016f",
     footer_copy:"\u00a9 2026 GarageOS. V\u0161echna pr\u00e1va vyhrazena.", footer_privacy:"Z\u00e1sady ochrany soukrom\u00ed", footer_terms:"Podm\u00ednky pou\u017eit\u00ed"
   },
@@ -612,7 +694,9 @@ var T = {
     pr_note:"\u0412\u0441\u0435 \u0442\u0430\u0440\u0438\u0444\u044b \u0432\u043a\u043b\u044e\u0447\u0430\u044e\u0442 14-\u0434\u043d\u0435\u0432\u043d\u044b\u0439 \u0431\u0435\u0441\u043f\u043b\u0430\u0442\u043d\u044b\u0439 \u043f\u0435\u0440\u0438\u043e\u0434.",
     ct_label:"\u041a\u043e\u043d\u0442\u0430\u043a\u0442", ct_title:"\u0414\u0430\u0432\u0430\u0439\u0442\u0435 \u043f\u043e\u0433\u043e\u0432\u043e\u0440\u0438\u043c.", ct_sub:"\u0417\u0430\u043a\u0430\u0436\u0438\u0442\u0435 \u0431\u0435\u0441\u043f\u043b\u0430\u0442\u043d\u043e\u0435 \u0434\u0435\u043c\u043e \u0438\u043b\u0438 \u0437\u0430\u0434\u0430\u0439\u0442\u0435 \u043b\u044e\u0431\u043e\u0439 \u0432\u043e\u043f\u0440\u043e\u0441.",
     cf_name:"\u041f\u043e\u043b\u043d\u043e\u0435 \u0438\u043c\u044f", cf_email:"E-mail", cf_garage:"\u041d\u0430\u0437\u0432\u0430\u043d\u0438\u0435 \u0441\u0435\u0440\u0432\u0438\u0441\u0430", cf_team:"\u0420\u0430\u0437\u043c\u0435\u0440 \u043a\u043e\u043c\u0430\u043d\u0434\u044b", cf_msg:"\u0421\u043e\u043e\u0431\u0449\u0435\u043d\u0438\u0435", cf_send:"\u041e\u0442\u043f\u0440\u0430\u0432\u0438\u0442\u044c \u0441\u043e\u043e\u0431\u0449\u0435\u043d\u0438\u0435",
-    tally_msg:"\u0413\u043e\u0442\u043e\u0432\u044b \u043d\u0430\u0447\u0430\u0442\u044c? \u041d\u0430\u0436\u043c\u0438\u0442\u0435 \u043d\u0438\u0436\u0435, \u0447\u0442\u043e\u0431\u044b \u043e\u0442\u043a\u0440\u044b\u0442\u044c \u0444\u043e\u0440\u043c\u0443.", tally_note:"\u041a\u043e\u0440\u043e\u0442\u043a\u0430\u044f \u0444\u043e\u0440\u043c\u0430 \u2014 \u0437\u0430\u0439\u043c\u0451\u0442 \u043c\u0435\u043d\u044c\u0448\u0435 2 \u043c\u0438\u043d\u0443\u0442",
+    cf_err_required:"\u041f\u043e\u0436\u0430\u043b\u0443\u0439\u0441\u0442\u0430, \u0443\u043a\u0430\u0436\u0438\u0442\u0435 \u0438\u043c\u044f \u0438 e-mail.",
+    cf_success:"\u0421\u043e\u043e\u0431\u0449\u0435\u043d\u0438\u0435 \u043e\u0442\u043f\u0440\u0430\u0432\u043b\u0435\u043d\u043e! \u041c\u044b \u0441\u0432\u044f\u0436\u0435\u043c\u0441\u044f \u0441 \u0432\u0430\u043c\u0438 \u0432 \u0442\u0435\u0447\u0435\u043d\u0438\u0435 24 \u0447\u0430\u0441\u043e\u0432.",
+    cf_error:"\u0427\u0442\u043e-\u0442\u043e \u043f\u043e\u0448\u043b\u043e \u043d\u0435 \u0442\u0430\u043a. \u041f\u043e\u043f\u0440\u043e\u0431\u0443\u0439\u0442\u0435 \u0435\u0449\u0451 \u0440\u0430\u0437 \u0438\u043b\u0438 \u043d\u0430\u043f\u0438\u0448\u0438\u0442\u0435 \u043d\u0430\u043c \u043d\u0430\u043f\u0440\u044f\u043c\u0443\u044e.",
     ci_email:"E-mail", ci_resp:"\u0412\u0440\u0435\u043c\u044f \u043e\u0442\u0432\u0435\u0442\u0430", ci_resp_v:"\u0412 \u0442\u0435\u0447\u0435\u043d\u0438\u0435 24 \u0447\u0430\u0441\u043e\u0432", ci_lang:"\u042f\u0437\u044b\u043a\u0438", ci_demo:"\u0414\u0435\u043c\u043e \u0431\u0435\u0441\u043f\u043b\u0430\u0442\u043d\u043e", ci_demo_v:"30 \u043c\u0438\u043d\u0443\u0442, \u0431\u0435\u0437 \u043e\u0431\u044f\u0437\u0430\u0442\u0435\u043b\u044c\u0441\u0442\u0432",
     footer_copy:"\u00a9 2026 GarageOS. \u0412\u0441\u0435 \u043f\u0440\u0430\u0432\u0430 \u0437\u0430\u0449\u0438\u0449\u0435\u043d\u044b.", footer_privacy:"\u041f\u043e\u043b\u0438\u0442\u0438\u043a\u0430 \u043a\u043e\u043d\u0444\u0438\u0434\u0435\u043d\u0446\u0438\u0430\u043b\u044c\u043d\u043e\u0441\u0442\u0438", footer_terms:"\u0423\u0441\u043b\u043e\u0432\u0438\u044f \u0438\u0441\u043f\u043e\u043b\u044c\u0437\u043e\u0432\u0430\u043d\u0438\u044f"
   }
@@ -694,6 +778,5 @@ window.addEventListener('scroll', onScroll, {passive: true});
 window.addEventListener('resize', onScroll);
 onScroll();
 </script>
-<script async src="https://tally.so/widgets/embed.js"></script>
 </body>
 </html>
