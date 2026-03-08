@@ -65,10 +65,13 @@
     .hero-avatars span:first-child{margin-left:0;}
 
     /* CAR TRACK */
-    #car-track{position:relative;height:150px;overflow:hidden;background:linear-gradient(180deg,var(--black) 0%,var(--dark) 100%);}
+    #car-track{position:relative;height:190px;overflow:hidden;background:linear-gradient(180deg,var(--black) 0%,var(--dark) 100%);}
     .track-road{position:absolute;bottom:28px;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,rgba(0,230,118,.35) 25%,rgba(41,121,255,.45) 75%,transparent);}
     .track-glow{position:absolute;bottom:18px;left:0;right:0;height:18px;background:linear-gradient(90deg,transparent,rgba(0,230,118,.07) 25%,rgba(41,121,255,.07) 75%,transparent);filter:blur(5px);}
-    #car911{position:absolute;bottom:30px;width:240px;height:auto;left:-260px;filter:drop-shadow(0 4px 16px rgba(0,230,118,.3));}
+    #car911{position:absolute;bottom:30px;width:240px;height:auto;left:-260px;filter:drop-shadow(0 4px 16px rgba(0,230,118,.3));z-index:1;}
+    #garage-svg{position:absolute;right:0;bottom:0;height:190px;width:auto;z-index:2;}
+    #garage-door{transform:translateY(0);transition:transform 0.4s cubic-bezier(0.4,0,0.2,1);}
+    #garage-door.open{transform:translateY(-72px);}
 
     /* STATS */
     #stats{padding:60px 24px;}
@@ -270,7 +273,87 @@
 <div id="car-track">
   <div class="track-glow"></div>
   <div class="track-road"></div>
-  <!-- Clean Porsche 911 side silhouette SVG -->
+
+  <!-- Garage building SVG -->
+  <svg id="garage-svg" viewBox="0 0 220 190" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <linearGradient id="gWall" x1="0%" y1="0%" x2="0%" y2="100%">
+        <stop offset="0%" stop-color="#1a2235"/>
+        <stop offset="100%" stop-color="#0d1220"/>
+      </linearGradient>
+      <linearGradient id="gRoof" x1="0%" y1="0%" x2="0%" y2="100%">
+        <stop offset="0%" stop-color="#141c2e"/>
+        <stop offset="100%" stop-color="#0a1018"/>
+      </linearGradient>
+      <linearGradient id="gDoorInner" x1="0%" y1="0%" x2="0%" y2="100%">
+        <stop offset="0%" stop-color="#0a0e18"/>
+        <stop offset="100%" stop-color="#060810"/>
+      </linearGradient>
+      <linearGradient id="gGreen" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#00e676"/>
+        <stop offset="100%" stop-color="#2979ff"/>
+      </linearGradient>
+    </defs>
+
+    <!-- Building wall -->
+    <rect x="10" y="30" width="210" height="160" fill="url(#gWall)" rx="2"/>
+
+    <!-- Roof overhang -->
+    <rect x="0" y="22" width="220" height="16" fill="url(#gRoof)" rx="2"/>
+    <rect x="0" y="22" width="220" height="3" fill="rgba(0,230,118,0.18)" rx="1"/>
+
+    <!-- Brick texture lines (horizontal) -->
+    <line x1="10" y1="50" x2="220" y2="50" stroke="rgba(255,255,255,0.03)" stroke-width="1"/>
+    <line x1="10" y1="70" x2="220" y2="70" stroke="rgba(255,255,255,0.03)" stroke-width="1"/>
+    <line x1="10" y1="90" x2="220" y2="90" stroke="rgba(255,255,255,0.03)" stroke-width="1"/>
+    <line x1="10" y1="110" x2="220" y2="110" stroke="rgba(255,255,255,0.03)" stroke-width="1"/>
+    <line x1="10" y1="130" x2="220" y2="130" stroke="rgba(255,255,255,0.03)" stroke-width="1"/>
+
+    <!-- Side window -->
+    <rect x="18" y="38" width="38" height="28" rx="3" fill="#060a14" stroke="rgba(41,121,255,0.25)" stroke-width="1"/>
+    <line x1="37" y1="38" x2="37" y2="66" stroke="rgba(41,121,255,0.15)" stroke-width="1"/>
+    <rect x="18" y="38" width="38" height="5" rx="2" fill="rgba(41,121,255,0.07)"/>
+
+    <!-- GarageOS sign -->
+    <rect x="14" y="76" width="60" height="18" rx="4" fill="rgba(0,0,0,0.5)" stroke="rgba(0,230,118,0.3)" stroke-width="1"/>
+    <text x="44" y="89" font-family="Inter,sans-serif" font-size="7" font-weight="700" fill="url(#gGreen)" text-anchor="middle" letter-spacing="0.5">GarageOS</text>
+
+    <!-- Door opening (dark interior) -->
+    <rect x="32" y="108" width="148" height="82" fill="url(#gDoorInner)" rx="2"/>
+    <!-- Interior depth shadow -->
+    <rect x="32" y="108" width="148" height="8" fill="rgba(0,0,0,0.5)"/>
+    <rect x="32" y="108" width="6" height="82" fill="rgba(0,0,0,0.4)"/>
+    <rect x="174" y="108" width="6" height="82" fill="rgba(0,0,0,0.4)"/>
+    <!-- Floor light inside garage -->
+    <ellipse cx="106" cy="185" rx="55" ry="6" fill="rgba(0,230,118,0.06)"/>
+
+    <!-- Door panel (slides up) -->
+    <g id="garage-door">
+      <!-- Door panels -->
+      <rect x="32" y="108" width="148" height="82" fill="#111928" rx="2"/>
+      <!-- Panel grooves -->
+      <rect x="32" y="128" width="148" height="3" fill="rgba(0,0,0,0.6)" rx="1"/>
+      <rect x="32" y="149" width="148" height="3" fill="rgba(0,0,0,0.6)" rx="1"/>
+      <rect x="32" y="170" width="148" height="3" fill="rgba(0,0,0,0.6)" rx="1"/>
+      <!-- Door vertical ribs -->
+      <line x1="73"  y1="108" x2="73"  y2="190" stroke="rgba(0,0,0,0.35)" stroke-width="1.5"/>
+      <line x1="106" y1="108" x2="106" y2="190" stroke="rgba(0,0,0,0.35)" stroke-width="1.5"/>
+      <line x1="139" y1="108" x2="139" y2="190" stroke="rgba(0,0,0,0.35)" stroke-width="1.5"/>
+      <!-- Door highlight top edge -->
+      <rect x="32" y="108" width="148" height="2" fill="rgba(255,255,255,0.06)" rx="1"/>
+      <!-- Door handle bar -->
+      <rect x="75" y="156" width="62" height="5" rx="2.5" fill="#0d1422" stroke="rgba(255,255,255,0.12)" stroke-width="0.8"/>
+      <!-- Green accent strip top of door -->
+      <rect x="32" y="108" width="148" height="3" fill="rgba(0,230,118,0.22)" rx="1"/>
+    </g>
+
+    <!-- Door frame -->
+    <rect x="28" y="105" width="4" height="85" fill="#0d1422"/>
+    <rect x="180" y="105" width="4" height="85" fill="#0d1422"/>
+    <rect x="28" y="105" width="156" height="4" fill="#0d1422"/>
+    <!-- Frame green glow line -->
+    <rect x="28" y="105" width="156" height="1.5" fill="rgba(0,230,118,0.4)"/>
+  </svg>
   <svg id="car911" viewBox="0 0 500 110" xmlns="http://www.w3.org/2000/svg">
     <defs>
       <linearGradient id="cBody" x1="0%" y1="0%" x2="0%" y2="100%">
@@ -748,6 +831,7 @@ window.addEventListener('scroll', function() {
 // Car animation
 var carEl = document.getElementById('car911');
 var trackEl = document.getElementById('car-track');
+var garageDoor = document.getElementById('garage-door');
 var carDone = false;
 function tryDrive() {
   if (carDone) return;
@@ -755,12 +839,45 @@ function tryDrive() {
   if (r.top < window.innerHeight && r.bottom > 0) {
     carDone = true;
     var x = -260;
-    var dest = window.innerWidth + 30;
+    var trackW = trackEl.offsetWidth;
+    var garageW = 220; // matches garage SVG width
+    var stopAt = trackW - garageW - 260; // stop with front bumper just at garage door
+    var dest = trackW + 10; // fully behind garage (off right edge)
+    var phase = 'drive'; // 'drive' | 'wait' | 'enter'
+
     function step() {
-      x += 4;
-      carEl.style.left = x + 'px';
-      if (x < dest) { requestAnimationFrame(step); }
-      else { setTimeout(function(){ carEl.style.left = '-260px'; carDone = false; }, 1600); }
+      if (phase === 'drive') {
+        x += 4;
+        carEl.style.left = x + 'px';
+        if (x < stopAt) {
+          requestAnimationFrame(step);
+        } else {
+          // Stopped in front of garage — open door
+          phase = 'wait';
+          garageDoor.classList.add('open');
+          // Wait for door to fully open (matches CSS transition 400ms), then enter
+          setTimeout(function() {
+            phase = 'enter';
+            requestAnimationFrame(step);
+          }, 500);
+        }
+      } else if (phase === 'enter') {
+        x += 4;
+        carEl.style.left = x + 'px';
+        if (x < dest) {
+          requestAnimationFrame(step);
+        } else {
+          // Car fully inside — close door
+          setTimeout(function() {
+            garageDoor.classList.remove('open');
+          }, 300);
+          // Reset everything after door closes
+          setTimeout(function() {
+            carEl.style.left = '-260px';
+            carDone = false;
+          }, 1400);
+        }
+      }
     }
     requestAnimationFrame(step);
   }
