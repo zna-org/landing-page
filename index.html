@@ -1,0 +1,699 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>GarageOS – CRM for Garage Services</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    :root{--black:#080909;--dark:#0f1115;--card:#141820;--card2:#1a2030;--green:#00e676;--blue:#2979ff;--text:#eaedf4;--muted:#6b7585;--muted2:#9aa3b2;--border:rgba(255,255,255,.06);--border2:rgba(255,255,255,.10);}
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    html{scroll-behavior:smooth;}
+    body{background:var(--black);color:var(--text);font-family:'Inter',system-ui,sans-serif;overflow-x:hidden;-webkit-font-smoothing:antialiased;}
+    ::-webkit-scrollbar{width:4px;}::-webkit-scrollbar-track{background:var(--black);}::-webkit-scrollbar-thumb{background:#252d3a;border-radius:99px;}
+
+    /* NAV */
+    nav{position:fixed;top:0;left:0;right:0;z-index:200;height:66px;display:flex;align-items:center;justify-content:space-between;padding:0 52px;background:rgba(8,9,9,.82);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);transition:background .3s;}
+    nav.scrolled{background:rgba(8,9,9,.97);}
+    .logo{display:flex;align-items:center;gap:10px;text-decoration:none;}
+    .logo-icon{width:34px;height:34px;border-radius:9px;background:linear-gradient(135deg,var(--green),var(--blue));display:flex;align-items:center;justify-content:center;font-size:16px;box-shadow:0 0 18px rgba(0,230,118,.28);}
+    .logo-text{font-size:1.18rem;font-weight:800;letter-spacing:-.4px;color:var(--text);}
+    .logo-text span{background:linear-gradient(135deg,var(--green),var(--blue));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+    .nav-links{display:flex;gap:4px;}
+    .nav-links a{color:var(--muted);text-decoration:none;font-size:.875rem;font-weight:500;padding:7px 14px;border-radius:8px;transition:color .2s,background .2s;}
+    .nav-links a:hover{color:var(--text);background:rgba(255,255,255,.04);}
+    .nav-right{display:flex;align-items:center;gap:12px;}
+
+    /* LANGUAGE SWITCHER */
+    .lang-sw{position:relative;display:flex;align-items:center;gap:7px;cursor:pointer;user-select:none;padding:7px 13px;border-radius:9px;border:1px solid var(--border2);transition:border-color .2s,background .2s;}
+    .lang-sw:hover{border-color:rgba(255,255,255,.18);background:rgba(255,255,255,.04);}
+    .lang-globe{font-size:14px;}
+    .lang-cur{font-size:.82rem;font-weight:600;color:var(--muted2);letter-spacing:.4px;}
+    .lang-chev{font-size:9px;color:var(--muted);transition:transform .2s;}
+    .lang-sw.open .lang-chev{transform:rotate(180deg);}
+    .lang-dd{display:none;position:absolute;top:calc(100% + 8px);right:0;background:var(--card2);border:1px solid var(--border2);border-radius:12px;overflow:hidden;min-width:150px;box-shadow:0 16px 48px rgba(0,0,0,.65);z-index:300;}
+    .lang-dd.open{display:block;}
+    .lang-opt{padding:11px 16px;font-size:.84rem;color:var(--muted2);cursor:pointer;transition:background .15s,color .15s;display:flex;align-items:center;justify-content:space-between;}
+    .lang-opt:hover{background:rgba(255,255,255,.06);color:var(--text);}
+    .lang-opt.active{color:var(--green);}
+    .lang-fn{display:flex;align-items:center;gap:9px;}
+    .lang-ck{opacity:0;font-size:11px;color:var(--green);}
+    .lang-opt.active .lang-ck{opacity:1;}
+
+    .btn-nav-demo{background:linear-gradient(135deg,var(--green),var(--blue));color:#000;font-weight:700;font-size:.85rem;padding:9px 20px;border-radius:9px;border:none;cursor:pointer;transition:opacity .2s,transform .15s,box-shadow .2s;white-space:nowrap;}
+    .btn-nav-demo:hover{opacity:.88;transform:translateY(-1px);box-shadow:0 4px 22px rgba(0,230,118,.3);}
+
+    /* HERO */
+    #hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:140px 24px 70px;position:relative;overflow:hidden;}
+    .hero-bg{position:absolute;inset:0;background:radial-gradient(ellipse 90% 65% at 50% -5%,rgba(41,121,255,.2) 0%,transparent 65%),radial-gradient(ellipse 60% 45% at 85% 85%,rgba(0,230,118,.11) 0%,transparent 55%);}
+    .hero-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.022) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.022) 1px,transparent 1px);background-size:64px 64px;mask-image:radial-gradient(ellipse 85% 85% at 50% 50%,black 0%,transparent 100%);}
+    .hero-content{position:relative;z-index:1;}
+    .hero-badge{display:inline-flex;align-items:center;gap:9px;background:rgba(0,230,118,.07);border:1px solid rgba(0,230,118,.18);border-radius:999px;padding:6px 18px 6px 8px;margin-bottom:30px;}
+    .hero-badge-dot{width:22px;height:22px;border-radius:50%;background:linear-gradient(135deg,var(--green),var(--blue));display:flex;align-items:center;justify-content:center;font-size:11px;}
+    .hero-badge-text{font-size:.76rem;font-weight:700;color:var(--green);letter-spacing:.8px;text-transform:uppercase;}
+    .hero-title{font-size:clamp(2.8rem,7vw,5.6rem);font-weight:900;line-height:1.04;letter-spacing:-3px;max-width:880px;margin:0 auto;}
+    .hero-title .grad{background:linear-gradient(105deg,var(--green) 0%,#00d4ff 45%,var(--blue) 85%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;display:block;}
+    .hero-sub{margin:22px auto 0;font-size:1.12rem;color:var(--muted2);max-width:510px;line-height:1.72;}
+    .hero-cta{margin-top:38px;display:flex;gap:14px;flex-wrap:wrap;justify-content:center;align-items:center;}
+    .btn-primary{display:inline-flex;align-items:center;gap:8px;background:linear-gradient(135deg,var(--green),var(--blue));color:#000;font-weight:800;font-size:1rem;padding:15px 32px;border-radius:12px;border:none;cursor:pointer;transition:opacity .2s,transform .2s,box-shadow .2s;box-shadow:0 8px 30px rgba(0,230,118,.22);}
+    .btn-primary:hover{opacity:.9;transform:translateY(-2px);box-shadow:0 12px 40px rgba(0,230,118,.33);}
+    .btn-ghost{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,.04);color:var(--text);font-weight:600;font-size:1rem;padding:14px 28px;border-radius:12px;border:1px solid var(--border2);cursor:pointer;transition:border-color .2s,background .2s;}
+    .btn-ghost:hover{border-color:rgba(41,121,255,.4);background:rgba(41,121,255,.06);}
+    .hero-social{margin-top:52px;display:flex;align-items:center;justify-content:center;gap:10px;font-size:.8rem;color:var(--muted);}
+    .hero-avatars{display:flex;}
+    .hero-avatars span{width:30px;height:30px;border-radius:50%;border:2px solid var(--black);background:linear-gradient(135deg,#1e2a3a,#2a3550);margin-left:-9px;display:flex;align-items:center;justify-content:center;font-size:12px;}
+    .hero-avatars span:first-child{margin-left:0;}
+
+    /* CAR TRACK */
+    #car-track{position:relative;height:150px;overflow:hidden;background:linear-gradient(180deg,var(--black) 0%,var(--dark) 100%);}
+    .track-road{position:absolute;bottom:28px;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,rgba(0,230,118,.35) 25%,rgba(41,121,255,.45) 75%,transparent);}
+    .track-glow{position:absolute;bottom:18px;left:0;right:0;height:18px;background:linear-gradient(90deg,transparent,rgba(0,230,118,.07) 25%,rgba(41,121,255,.07) 75%,transparent);filter:blur(5px);}
+    #car911{position:absolute;bottom:30px;width:240px;height:auto;left:-260px;filter:drop-shadow(0 4px 16px rgba(0,230,118,.3));}
+
+    /* STATS */
+    #stats{padding:60px 24px;}
+    .stats-inner{max-width:940px;margin:0 auto;display:grid;grid-template-columns:repeat(4,1fr);gap:1px;border:1px solid var(--border2);border-radius:18px;overflow:hidden;background:var(--border2);}
+    .stat-item{background:var(--card);padding:36px 20px;text-align:center;transition:background .2s;}
+    .stat-item:hover{background:var(--card2);}
+    .stat-num{font-size:2.4rem;font-weight:900;letter-spacing:-2px;background:linear-gradient(135deg,var(--green),var(--blue));-webkit-background-clip:text;-webkit-text-fill-color:transparent;line-height:1;}
+    .stat-label{color:var(--muted);font-size:.8rem;margin-top:8px;font-weight:500;}
+
+    /* SHARED SECTION STYLES */
+    .si{max-width:1100px;margin:0 auto;}
+    .eyebrow{display:inline-flex;align-items:center;gap:8px;margin-bottom:16px;}
+    .eyebrow-line{width:20px;height:2px;background:var(--green);border-radius:99px;}
+    .eyebrow-text{font-size:.74rem;font-weight:700;letter-spacing:1.8px;text-transform:uppercase;color:var(--green);}
+    .s-title{font-size:clamp(1.9rem,3.8vw,2.9rem);font-weight:800;letter-spacing:-1.2px;line-height:1.12;max-width:600px;}
+    .s-sub{margin-top:16px;color:var(--muted2);font-size:1rem;max-width:490px;line-height:1.72;}
+
+    /* FEATURES */
+    #features{padding:100px 24px;background:var(--dark);}
+    .feat-grid{margin-top:58px;display:grid;grid-template-columns:repeat(3,1fr);gap:18px;}
+    .feat-card{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:30px 26px;transition:transform .3s,border-color .3s,box-shadow .3s;position:relative;overflow:hidden;}
+    .feat-card::after{content:'';position:absolute;inset:0;opacity:0;background:radial-gradient(ellipse 80% 55% at 50% 0%,rgba(0,230,118,.055),transparent);transition:opacity .3s;pointer-events:none;}
+    .feat-card:hover{transform:translateY(-5px);border-color:rgba(0,230,118,.17);box-shadow:0 14px 40px rgba(0,0,0,.28);}
+    .feat-card:hover::after{opacity:1;}
+    .feat-card.bh::after{background:radial-gradient(ellipse 80% 55% at 50% 0%,rgba(41,121,255,.07),transparent);}
+    .feat-card.bh:hover{border-color:rgba(41,121,255,.22);}
+    .feat-icon{width:46px;height:46px;border-radius:12px;margin-bottom:20px;display:flex;align-items:center;justify-content:center;font-size:1.3rem;}
+    .feat-icon.g{background:rgba(0,230,118,.1);box-shadow:0 0 0 1px rgba(0,230,118,.14);}
+    .feat-icon.b{background:rgba(41,121,255,.1);box-shadow:0 0 0 1px rgba(41,121,255,.14);}
+    .feat-title{font-size:.98rem;font-weight:700;margin-bottom:9px;letter-spacing:-.3px;}
+    .feat-desc{color:var(--muted);font-size:.875rem;line-height:1.66;}
+
+    /* HOW IT WORKS */
+    #how{padding:100px 24px;}
+    .how-grid{margin-top:58px;display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center;}
+    .steps{display:flex;flex-direction:column;}
+    .step{display:flex;gap:20px;padding:22px 0;border-bottom:1px solid var(--border);transition:padding-left .25s;}
+    .step:last-child{border-bottom:none;}
+    .step:hover{padding-left:6px;}
+    .step-num{font-size:1.5rem;font-weight:900;line-height:1.1;min-width:42px;background:linear-gradient(135deg,var(--green),var(--blue));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+    .step-title{font-size:.96rem;font-weight:700;margin-bottom:5px;}
+    .step-desc{color:var(--muted);font-size:.865rem;line-height:1.65;}
+    .mock{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:28px;position:relative;overflow:hidden;}
+    .mock::before{content:'';position:absolute;top:-50px;right:-50px;width:180px;height:180px;border-radius:50%;background:radial-gradient(circle,rgba(0,230,118,.07),transparent 70%);}
+    .mock-bar{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;padding-bottom:16px;border-bottom:1px solid var(--border);}
+    .mock-bar-title{font-size:.82rem;font-weight:700;color:var(--muted2);}
+    .mock-dots{display:flex;gap:6px;}
+    .mock-dots span{width:8px;height:8px;border-radius:50%;}
+    .mock-dots span:nth-child(1){background:#ff5f56;}
+    .mock-dots span:nth-child(2){background:#ffbe2e;}
+    .mock-dots span:nth-child(3){background:#28c940;}
+    .mock-row{display:flex;align-items:center;gap:12px;background:var(--card2);border-radius:10px;padding:11px 14px;border:1px solid var(--border);margin-bottom:10px;animation:rp 4s ease-in-out infinite;}
+    .mock-row:nth-child(3){animation-delay:.6s;}
+    .mock-row:nth-child(4){animation-delay:1.2s;}
+    .mock-row:nth-child(5){animation-delay:1.8s;}
+    @keyframes rp{0%,100%{opacity:1;}50%{opacity:.7;}}
+    .mock-st{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+    .mock-st.g{background:var(--green);box-shadow:0 0 5px var(--green);}
+    .mock-st.b{background:var(--blue);box-shadow:0 0 5px var(--blue);}
+    .mock-st.y{background:#ffd740;}
+    .mock-info{flex:1;}
+    .mock-info-t{font-size:.78rem;font-weight:600;}
+    .mock-info-s{font-size:.7rem;color:var(--muted);margin-top:2px;}
+    .mock-tag{font-size:.66rem;font-weight:700;padding:2px 9px;border-radius:6px;white-space:nowrap;}
+    .mock-tag.done{background:rgba(0,230,118,.1);color:var(--green);}
+    .mock-tag.prog{background:rgba(41,121,255,.1);color:var(--blue);}
+    .mock-tag.wait{background:rgba(255,215,64,.1);color:#ffd740;}
+    .mock-footer{display:flex;gap:8px;margin-top:18px;padding-top:16px;border-top:1px solid var(--border);}
+    .mock-kpi{flex:1;background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:12px;text-align:center;}
+    .mock-kpi-v{font-size:1.15rem;font-weight:800;background:linear-gradient(135deg,var(--green),var(--blue));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+    .mock-kpi-l{font-size:.66rem;color:var(--muted);margin-top:3px;}
+
+    /* PRICING */
+    #pricing{padding:100px 24px;background:var(--dark);}
+    .pricing-grid{margin-top:58px;display:grid;grid-template-columns:repeat(2,1fr);gap:22px;max-width:740px;}
+    .price-card{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:36px 32px;position:relative;transition:transform .3s,box-shadow .3s;}
+    .price-card:hover{transform:translateY(-5px);box-shadow:0 18px 50px rgba(0,0,0,.3);}
+    .price-card.pop{background:var(--card2);border-color:rgba(0,230,118,.28);box-shadow:0 0 0 1px rgba(0,230,118,.09),0 20px 55px rgba(0,0,0,.4);}
+    .pop-badge{position:absolute;top:-13px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,var(--green),var(--blue));color:#000;font-size:.68rem;font-weight:800;letter-spacing:1px;padding:4px 16px;border-radius:999px;text-transform:uppercase;white-space:nowrap;}
+    .price-tier{font-size:.76rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:1.2px;}
+    .price-target{font-size:.82rem;color:var(--muted2);margin-top:5px;font-weight:500;}
+    .price-row{display:flex;align-items:flex-end;gap:3px;margin:16px 0 3px;}
+    .price-cur{font-size:1.3rem;font-weight:800;padding-bottom:5px;color:var(--muted2);}
+    .price-num{font-size:3.2rem;font-weight:900;letter-spacing:-2.5px;line-height:1;}
+    .price-period{color:var(--muted);font-size:.82rem;margin-bottom:24px;}
+    .price-div{height:1px;background:var(--border);margin-bottom:22px;}
+    .price-feats{list-style:none;display:flex;flex-direction:column;gap:11px;margin-bottom:28px;}
+    .price-feats li{font-size:.875rem;color:var(--muted2);display:flex;align-items:flex-start;gap:10px;}
+    .pf-check{width:18px;height:18px;border-radius:5px;flex-shrink:0;margin-top:1px;background:rgba(0,230,118,.09);border:1px solid rgba(0,230,118,.18);display:flex;align-items:center;justify-content:center;font-size:9px;color:var(--green);font-weight:900;}
+    .price-card.pop .pf-check{background:rgba(0,230,118,.14);border-color:rgba(0,230,118,.28);}
+    .btn-plan{width:100%;padding:13px 20px;border-radius:11px;font-weight:700;font-size:.9rem;cursor:pointer;transition:all .2s;background:linear-gradient(135deg,var(--green),var(--blue));color:#000;border:none;box-shadow:0 6px 20px rgba(0,230,118,.18);}
+    .btn-plan:hover{opacity:.9;transform:translateY(-1px);box-shadow:0 10px 28px rgba(0,230,118,.28);}
+    .pricing-note{margin-top:18px;font-size:.82rem;color:var(--muted);text-align:center;max-width:740px;}
+
+    /* CONTACT */
+    #contact{padding:100px 24px;}
+    .contact-grid{margin-top:58px;display:grid;grid-template-columns:3fr 2fr;gap:60px;align-items:start;}
+    .tally-wrap{border-radius:16px;overflow:hidden;background:var(--card);border:1px solid var(--border);}
+    .tally-wrap iframe{display:block;width:100%;border:none;min-height:520px;}
+    .contact-cards{display:flex;flex-direction:column;gap:12px;}
+    .ci-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:20px;display:flex;align-items:flex-start;gap:15px;transition:border-color .2s;}
+    .ci-card:hover{border-color:var(--border2);}
+    .ci-ico{width:40px;height:40px;border-radius:10px;flex-shrink:0;background:var(--card2);display:flex;align-items:center;justify-content:center;font-size:1.05rem;}
+    .ci-label{font-size:.74rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px;}
+    .ci-value{font-size:.9rem;font-weight:500;color:var(--text);}
+
+    /* FOOTER */
+    footer{padding:30px 52px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:14px;}
+    .footer-logo{display:flex;align-items:center;gap:9px;text-decoration:none;}
+    .footer-logo-icon{width:26px;height:26px;border-radius:7px;background:linear-gradient(135deg,var(--green),var(--blue));display:flex;align-items:center;justify-content:center;font-size:12px;}
+    .footer-logo-text{font-size:.98rem;font-weight:800;color:var(--text);}
+    footer p{color:var(--muted);font-size:.79rem;}
+    .footer-links{display:flex;gap:20px;}
+    .footer-links a{color:var(--muted);font-size:.79rem;text-decoration:none;transition:color .2s;}
+    .footer-links a:hover{color:var(--text);}
+
+    /* REVEAL */
+    .reveal{opacity:0;transform:translateY(22px);transition:opacity .65s ease,transform .65s ease;}
+    .reveal.visible{opacity:1;transform:translateY(0);}
+    .d1{transition-delay:.08s;}.d2{transition-delay:.16s;}.d3{transition-delay:.24s;}
+    .d4{transition-delay:.32s;}.d5{transition-delay:.40s;}.d6{transition-delay:.48s;}
+
+    /* RESPONSIVE */
+    @media(max-width:980px){.feat-grid{grid-template-columns:repeat(2,1fr);}.how-grid{grid-template-columns:1fr;gap:40px;}.pricing-grid{grid-template-columns:1fr;max-width:420px;}}
+    @media(max-width:700px){nav{padding:0 20px;}.nav-links{display:none;}.feat-grid{grid-template-columns:1fr;}.contact-grid{grid-template-columns:1fr;gap:38px;}.form-row{grid-template-columns:1fr;}.stats-inner{grid-template-columns:repeat(2,1fr);}footer{flex-direction:column;text-align:center;}}
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="mainNav">
+  <a class="logo" href="#">
+    <div class="logo-icon">&#x1F527;</div>
+    <div class="logo-text">Garage<span>OS</span></div>
+  </a>
+  <div class="nav-links">
+    <a href="#features" data-i18n="nav_features">Features</a>
+    <a href="#how" data-i18n="nav_how">How it works</a>
+    <a href="#pricing" data-i18n="nav_pricing">Pricing</a>
+    <a href="#contact" data-i18n="nav_contact">Contact</a>
+  </div>
+  <div class="nav-right">
+    <div class="lang-sw" id="langSw">
+      <span class="lang-globe">&#x1F310;</span>
+      <span class="lang-cur" id="langCur">EN</span>
+      <span class="lang-chev">&#9660;</span>
+      <div class="lang-dd" id="langDd">
+        <div class="lang-opt active" data-lang="en"><div class="lang-fn"><span>&#x1F1EC;&#x1F1E7;</span><span>English</span></div><span class="lang-ck">&#10003;</span></div>
+        <div class="lang-opt" data-lang="cs"><div class="lang-fn"><span>&#x1F1E8;&#x1F1FF;</span><span>&#268;e&#353;tina</span></div><span class="lang-ck">&#10003;</span></div>
+        <div class="lang-opt" data-lang="ru"><div class="lang-fn"><span>&#x1F1F7;&#x1F1FA;</span><span>&#1056;&#1091;&#1089;&#1089;&#1082;&#1080;&#1081;</span></div><span class="lang-ck">&#10003;</span></div>
+      </div>
+    </div>
+    <button class="btn-nav-demo" data-i18n="btn_demo" onclick="document.getElementById('contact').scrollIntoView({behavior:'smooth'})">Book a Demo</button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-grid"></div>
+  <div class="hero-content">
+    <div class="hero-badge">
+      <div class="hero-badge-dot">&#x1F697;</div>
+      <span class="hero-badge-text" data-i18n="hero_badge">CRM for Garage Services</span>
+    </div>
+    <h1 class="hero-title">
+      <span data-i18n="hero_line1">Run your garage.</span><br>
+      <span class="grad" data-i18n="hero_line2">Like a pro.</span>
+    </h1>
+    <p class="hero-sub" data-i18n="hero_sub">From the moment a customer walks in to the second they pay — GarageOS tracks everything. Customers, jobs, parts, staff, and invoices. All connected.</p>
+    <div class="hero-cta">
+      <button class="btn-primary" onclick="document.getElementById('contact').scrollIntoView({behavior:'smooth'})">
+        <span data-i18n="hero_cta1">Book a Free Demo</span><span>&#8594;</span>
+      </button>
+      <button class="btn-ghost" onclick="document.getElementById('features').scrollIntoView({behavior:'smooth'})">
+        <span data-i18n="hero_cta2">See Features</span>
+      </button>
+    </div>
+    <div class="hero-social">
+      <div class="hero-avatars"><span>&#x1F468;</span><span>&#x1F469;</span><span>&#x1F468;&#x200D;&#x1F527;</span><span>&#x1F469;&#x200D;&#x1F4BC;</span></div>
+      <span data-i18n="hero_trust">Early access now open — built for small garages</span>
+    </div>
+  </div>
+</section>
+
+<!-- CAR TRACK -->
+<div id="car-track">
+  <div class="track-glow"></div>
+  <div class="track-road"></div>
+  <!-- Clean Porsche 911 side silhouette SVG -->
+  <svg id="car911" viewBox="0 0 500 110" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <linearGradient id="cBody" x1="0%" y1="0%" x2="0%" y2="100%">
+        <stop offset="0%" stop-color="#2a3448"/>
+        <stop offset="60%" stop-color="#1a2235"/>
+        <stop offset="100%" stop-color="#0d1220"/>
+      </linearGradient>
+      <linearGradient id="cWin" x1="0%" y1="0%" x2="20%" y2="100%">
+        <stop offset="0%" stop-color="rgba(90,150,255,0.55)"/>
+        <stop offset="100%" stop-color="rgba(20,50,150,0.2)"/>
+      </linearGradient>
+      <radialGradient id="cWhl" cx="40%" cy="35%" r="60%">
+        <stop offset="0%" stop-color="#252d42"/>
+        <stop offset="100%" stop-color="#06080e"/>
+      </radialGradient>
+      <radialGradient id="cRim" cx="38%" cy="32%" r="65%">
+        <stop offset="0%" stop-color="#555e78"/>
+        <stop offset="100%" stop-color="#151c2e"/>
+      </radialGradient>
+      <radialGradient id="cHd" cx="50%" cy="50%" r="50%">
+        <stop offset="0%" stop-color="rgba(255,252,200,0.95)"/>
+        <stop offset="70%" stop-color="rgba(255,230,100,0.4)"/>
+        <stop offset="100%" stop-color="transparent"/>
+      </radialGradient>
+    </defs>
+    <!-- Ground shadow -->
+    <ellipse cx="250" cy="103" rx="220" ry="8" fill="rgba(0,0,0,0.5)"/>
+    <!-- Underbody -->
+    <path d="M78 88 L92 82 L408 82 L420 88 L416 96 L82 96 Z" fill="#090c14"/>
+    <!-- Main body — 911 fastback shape -->
+    <path d="M82 88 L90 80 Q95 70 104 62 Q116 52 134 46 L148 28 Q162 16 182 10 Q206 4 238 3 Q272 2 298 6 Q322 10 340 18 Q358 26 370 38 Q382 50 390 62 Q398 70 404 80 L408 82 L420 88 L416 96 L82 96 Z" fill="url(#cBody)"/>
+    <!-- Body highlight -->
+    <path d="M148 28 Q220 8 318 8 Q365 8 390 28" stroke="rgba(255,255,255,0.09)" stroke-width="2" fill="none" stroke-linecap="round"/>
+    <!-- Fastback roof -->
+    <path d="M148 28 Q164 16 184 10 Q208 4 240 3 Q274 2 300 6 Q324 10 342 18 Q360 26 370 38 Q378 46 380 54 L365 58 Q356 48 340 38 Q320 28 294 20 Q264 14 232 14 Q202 14 182 22 Q166 28 158 38 Z" fill="#111928"/>
+    <!-- Rear quarter window -->
+    <path d="M160 38 Q168 26 184 18 Q198 12 216 10 L214 34 Q200 36 186 42 Z" fill="url(#cWin)" stroke="rgba(110,165,255,0.3)" stroke-width="0.8"/>
+    <!-- Main side window -->
+    <path d="M216 10 Q252 6 288 8 Q316 10 336 18 Q352 24 362 36 L340 40 Q328 30 304 22 Q278 16 248 16 Q228 16 214 22 Z" fill="url(#cWin)" stroke="rgba(110,165,255,0.3)" stroke-width="0.8"/>
+    <!-- Windshield -->
+    <path d="M362 36 Q374 30 388 40 Q392 46 390 54 L374 58 Q370 50 362 44 Z" fill="url(#cWin)" stroke="rgba(110,165,255,0.25)" stroke-width="0.8"/>
+    <!-- Pillars -->
+    <line x1="216" y1="10" x2="214" y2="34" stroke="rgba(255,255,255,0.12)" stroke-width="1.4"/>
+    <line x1="340" y1="18" x2="338" y2="40" stroke="rgba(255,255,255,0.12)" stroke-width="1.4"/>
+    <line x1="386" y1="38" x2="388" y2="56" stroke="rgba(255,255,255,0.10)" stroke-width="1.4"/>
+    <!-- Door crease + handle -->
+    <path d="M140 60 Q250 54 360 57 Q385 58 400 64" stroke="rgba(255,255,255,0.07)" stroke-width="1" fill="none"/>
+    <rect x="222" y="61" width="32" height="5" rx="2.5" fill="#080c16" stroke="rgba(255,255,255,0.1)" stroke-width="0.7"/>
+    <line x1="214" y1="34" x2="216" y2="82" stroke="rgba(0,0,0,0.4)" stroke-width="1.1"/>
+    <line x1="338" y1="40" x2="340" y2="82" stroke="rgba(0,0,0,0.4)" stroke-width="1.1"/>
+    <!-- Engine lid rear vents -->
+    <path d="M94 58 Q106 46 120 42 Q134 38 148 36 L146 44 Q134 46 122 52 Q108 60 100 72 L90 80 Z" fill="#151e2e"/>
+    <line x1="108" y1="52" x2="130" y2="46" stroke="rgba(255,255,255,0.09)" stroke-width="1.3" stroke-linecap="round"/>
+    <line x1="104" y1="58" x2="128" y2="52" stroke="rgba(255,255,255,0.09)" stroke-width="1.3" stroke-linecap="round"/>
+    <line x1="100" y1="64" x2="124" y2="58" stroke="rgba(255,255,255,0.09)" stroke-width="1.3" stroke-linecap="round"/>
+    <!-- Ducktail spoiler -->
+    <path d="M90 40 Q100 34 116 33 Q130 32 140 36 L136 42 Q124 38 112 40 Q102 42 96 46 Z" fill="#161e30" stroke="rgba(0,230,118,0.22)" stroke-width="0.9"/>
+    <!-- Front hood -->
+    <path d="M344 42 Q366 44 384 56 Q394 64 398 80 L380 80 Q376 70 366 62 Q354 52 340 48 Z" fill="#1e2a3c" stroke="rgba(255,255,255,0.05)" stroke-width="0.7"/>
+    <!-- Headlight -->
+    <path d="M398 62 Q404 54 412 52 Q420 50 424 56 Q428 62 426 70 Q424 76 416 78 Q406 79 400 73 Z" fill="#070b16" stroke="rgba(150,165,195,0.28)" stroke-width="0.8"/>
+    <ellipse cx="412" cy="65" rx="8" ry="6" fill="url(#cHd)" opacity="0.9"/>
+    <ellipse cx="412" cy="65" rx="4" ry="3.5" fill="rgba(255,255,210,0.85)"/>
+    <path d="M400 72 Q408 78 418 76 Q424 73 426 69" stroke="rgba(200,225,255,0.8)" stroke-width="1.6" fill="none" stroke-linecap="round"/>
+    <path d="M424 54 L490 38 L490 92 L424 76 Z" fill="rgba(255,252,180,0.025)"/>
+    <!-- Tail light -->
+    <path d="M82 54 Q75 62 73 72 Q72 80 76 84 L90 82 Q87 74 90 64 Q92 56 98 48 Z" fill="#070b16" stroke="rgba(190,35,35,0.28)" stroke-width="0.8"/>
+    <path d="M77 58 Q74 66 74 75" stroke="rgba(225,45,45,0.85)" stroke-width="3" stroke-linecap="round"/>
+    <path d="M81 56 Q78 62 78 69" stroke="rgba(225,45,45,0.45)" stroke-width="1.8" stroke-linecap="round"/>
+    <path d="M85 53 Q83 57 82 62" stroke="rgba(255,160,35,0.65)" stroke-width="1.8" stroke-linecap="round"/>
+    <!-- Exhausts -->
+    <ellipse cx="84" cy="92" rx="5.5" ry="3.5" fill="#060810" stroke="rgba(145,155,180,0.3)" stroke-width="0.9"/>
+    <ellipse cx="84" cy="92" rx="3" ry="2" fill="#030508"/>
+    <ellipse cx="96" cy="92" rx="5.5" ry="3.5" fill="#060810" stroke="rgba(145,155,180,0.3)" stroke-width="0.9"/>
+    <ellipse cx="96" cy="92" rx="3" ry="2" fill="#030508"/>
+    <ellipse cx="90" cy="92" rx="15" ry="5" fill="rgba(0,230,118,0.12)" opacity="0.8"/>
+    <!-- Front wheel -->
+    <circle cx="388" cy="95" r="22" fill="#040608"/>
+    <circle cx="388" cy="95" r="20" fill="url(#cWhl)" stroke="rgba(45,58,85,0.7)" stroke-width="1.1"/>
+    <circle cx="388" cy="95" r="18" fill="none" stroke="rgba(30,40,62,0.8)" stroke-width="2.2"/>
+    <circle cx="388" cy="95" r="13" fill="url(#cRim)" stroke="rgba(80,95,130,0.45)" stroke-width="0.9"/>
+    <circle cx="388" cy="95" r="4.5" fill="#121a28" stroke="rgba(130,145,175,0.5)" stroke-width="0.8"/>
+    <circle cx="388" cy="95" r="2" fill="rgba(0,230,118,0.7)"/>
+    <line x1="388" y1="83" x2="388" y2="91" stroke="rgba(130,148,178,0.72)" stroke-width="2" stroke-linecap="round"/>
+    <line x1="400" y1="87" x2="394" y2="93" stroke="rgba(130,148,178,0.72)" stroke-width="2" stroke-linecap="round"/>
+    <line x1="396" y1="101" x2="392" y2="97" stroke="rgba(130,148,178,0.72)" stroke-width="2" stroke-linecap="round"/>
+    <line x1="380" y1="101" x2="384" y2="97" stroke="rgba(130,148,178,0.72)" stroke-width="2" stroke-linecap="round"/>
+    <line x1="376" y1="87" x2="382" y2="93" stroke="rgba(130,148,178,0.72)" stroke-width="2" stroke-linecap="round"/>
+    <path d="M376 86 Q370 94 375 103 Q377 105 380 103 Q375 94 377 86 Z" fill="rgba(205,40,40,0.82)"/>
+    <!-- Rear wheel -->
+    <circle cx="134" cy="95" r="22" fill="#040608"/>
+    <circle cx="134" cy="95" r="20" fill="url(#cWhl)" stroke="rgba(45,58,85,0.7)" stroke-width="1.1"/>
+    <circle cx="134" cy="95" r="18" fill="none" stroke="rgba(30,40,62,0.8)" stroke-width="2.2"/>
+    <circle cx="134" cy="95" r="13" fill="url(#cRim)" stroke="rgba(80,95,130,0.45)" stroke-width="0.9"/>
+    <circle cx="134" cy="95" r="4.5" fill="#121a28" stroke="rgba(130,145,175,0.5)" stroke-width="0.8"/>
+    <circle cx="134" cy="95" r="2" fill="rgba(0,230,118,0.7)"/>
+    <line x1="134" y1="83" x2="134" y2="91" stroke="rgba(130,148,178,0.72)" stroke-width="2" stroke-linecap="round"/>
+    <line x1="146" y1="87" x2="140" y2="93" stroke="rgba(130,148,178,0.72)" stroke-width="2" stroke-linecap="round"/>
+    <line x1="142" y1="101" x2="138" y2="97" stroke="rgba(130,148,178,0.72)" stroke-width="2" stroke-linecap="round"/>
+    <line x1="126" y1="101" x2="130" y2="97" stroke="rgba(130,148,178,0.72)" stroke-width="2" stroke-linecap="round"/>
+    <line x1="122" y1="87" x2="128" y2="93" stroke="rgba(130,148,178,0.72)" stroke-width="2" stroke-linecap="round"/>
+    <path d="M122 86 Q116 94 121 103 Q123 105 126 103 Q121 94 123 86 Z" fill="rgba(205,40,40,0.82)"/>
+  </svg>
+</div>
+
+<!-- STATS -->
+<section id="stats">
+  <div class="stats-inner reveal">
+    <div class="stat-item"><div class="stat-num" style="-webkit-text-fill-color:unset;background:none;color:var(--green);font-size:1.6rem;letter-spacing:0;">Early Access</div><div class="stat-label" data-i18n="stat1">Now Open</div></div>
+    <div class="stat-item"><div class="stat-num">&#x20AC;0</div><div class="stat-label" data-i18n="stat2">Setup Fee</div></div>
+    <div class="stat-item"><div class="stat-num">3&#x00D7;</div><div class="stat-label" data-i18n="stat3">Faster Invoicing</div></div>
+    <div class="stat-item"><div class="stat-num">24/7</div><div class="stat-label" data-i18n="stat4">Support Available</div></div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section id="features">
+  <div class="si">
+    <div class="reveal">
+      <div class="eyebrow"><div class="eyebrow-line"></div><span class="eyebrow-text" data-i18n="feat_label">Features</span></div>
+      <h2 class="s-title" data-i18n="feat_title">One system. Every step covered.</h2>
+      <p class="s-sub" data-i18n="feat_sub">GarageOS connects every part of your business &#8212; from first customer contact to final payment.</p>
+    </div>
+    <div class="feat-grid">
+      <div class="feat-card reveal d1"><div class="feat-icon g">&#x1F465;</div><div class="feat-title" data-i18n="f1t">Customer Management</div><div class="feat-desc" data-i18n="f1d">Full history for every customer &#8212; their vehicles, past services, contact details, and notes. Build real relationships.</div></div>
+      <div class="feat-card bh reveal d2"><div class="feat-icon b">&#x1F4CA;</div><div class="feat-title" data-i18n="f2t">Business Reports</div><div class="feat-desc" data-i18n="f2d">Generate detailed reports on jobs, car history, or employee activity &#8212; weekly or monthly. Always know what happened and when.</div></div>
+      <div class="feat-card reveal d3"><div class="feat-icon g">&#x1F527;</div><div class="feat-title" data-i18n="f3t">Job &amp; Service Tracking</div><div class="feat-desc" data-i18n="f3d">Track every repair from intake to completion. Log the services provided, parts used, and time spent per job.</div></div>
+      <div class="feat-card bh reveal d4"><div class="feat-icon b">&#x1F4E6;</div><div class="feat-title" data-i18n="f4t">Parts &amp; Stock</div><div class="feat-desc" data-i18n="f4d">Manage your parts inventory in real time. Parts get automatically linked to jobs so your stock count is always accurate.</div></div>
+      <div class="feat-card reveal d5"><div class="feat-icon g">&#x1F9FE;</div><div class="feat-title" data-i18n="f5t">Invoicing</div><div class="feat-desc" data-i18n="f5d">Generate professional invoices in seconds &#8212; pre-filled from the job data. No manual typing, no mistakes.</div></div>
+      <div class="feat-card bh reveal d6"><div class="feat-icon b">&#x1F477;</div><div class="feat-title" data-i18n="f6t">Employee Overview</div><div class="feat-desc" data-i18n="f6d">See who is working on what. Assign jobs to technicians and track their workload at a glance.</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section id="how">
+  <div class="si">
+    <div class="reveal">
+      <div class="eyebrow"><div class="eyebrow-line"></div><span class="eyebrow-text" data-i18n="how_label">How It Works</span></div>
+      <h2 class="s-title" data-i18n="how_title">From arrival to payment &#8212; fully tracked.</h2>
+      <p class="s-sub" data-i18n="how_sub">GarageOS follows the natural flow of your workday. No complicated setup, no IT skills needed.</p>
+    </div>
+    <div class="how-grid">
+      <div class="steps reveal">
+        <div class="step"><div class="step-num">01</div><div><div class="step-title" data-i18n="s1t">Customer arrives</div><div class="step-desc" data-i18n="s1d">Find the customer in seconds or create a new record. Vehicle details, contact info, and full history are right there.</div></div></div>
+        <div class="step"><div class="step-num">02</div><div><div class="step-title" data-i18n="s2t">Open a service card</div><div class="step-desc" data-i18n="s2d">Create a service card for the visit. Add individual jobs to it — each assigned to a technician — and track parts and time as work progresses.</div></div></div>
+        <div class="step"><div class="step-num">03</div><div><div class="step-title" data-i18n="s3t">Complete the service</div><div class="step-desc" data-i18n="s3d">Log all services provided and parts used. Stock is updated automatically. Job status changes to done.</div></div></div>
+        <div class="step"><div class="step-num">04</div><div><div class="step-title" data-i18n="s4t">Send invoice &amp; get paid</div><div class="step-desc" data-i18n="s4d">One click generates a complete invoice from the job data. Customer pays, transaction is recorded. Done.</div></div></div>
+      </div>
+      <div class="mock reveal">
+        <div class="mock-bar"><span class="mock-bar-title" data-i18n="mock_title">Active Jobs Today</span><div class="mock-dots"><span></span><span></span><span></span></div></div>
+        <div class="mock-row"><div class="mock-st g"></div><div class="mock-info"><div class="mock-info-t">BMW 3 &#8212; Oil Change</div><div class="mock-info-s">Jan Nov&#225;k &middot; Mech: Petr</div></div><span class="mock-tag done" data-i18n="tag_done">Done</span></div>
+        <div class="mock-row"><div class="mock-st b"></div><div class="mock-info"><div class="mock-info-t">&#352;koda Octavia &#8212; Brakes</div><div class="mock-info-s">Eva Hor&#225;&#269;kov&#225; &middot; Mech: Pavel</div></div><span class="mock-tag prog" data-i18n="tag_prog">In progress</span></div>
+        <div class="mock-row"><div class="mock-st y"></div><div class="mock-info"><div class="mock-info-t">VW Golf &#8212; Inspection</div><div class="mock-info-s">Tom&#225;&#353; Kratochv&#237;l</div></div><span class="mock-tag wait" data-i18n="tag_wait">Waiting</span></div>
+        <div class="mock-footer">
+          <div class="mock-kpi"><div class="mock-kpi-v">7</div><div class="mock-kpi-l" data-i18n="kpi1">Jobs today</div></div>
+          <div class="mock-kpi"><div class="mock-kpi-v">4</div><div class="mock-kpi-l" data-i18n="kpi2">Completed</div></div>
+          <div class="mock-kpi"><div class="mock-kpi-v">12 400 K&#269;</div><div class="mock-kpi-l" data-i18n="kpi3">Revenue</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section id="pricing">
+  <div class="si">
+    <div class="reveal">
+      <div class="eyebrow"><div class="eyebrow-line"></div><span class="eyebrow-text" data-i18n="pr_label">Pricing</span></div>
+      <h2 class="s-title" data-i18n="pr_title">Simple pricing. No surprises.</h2>
+      <p class="s-sub" data-i18n="pr_sub">Two plans built for small garages. Pay monthly, cancel any time.</p>
+    </div>
+    <div class="pricing-grid reveal">
+      <div class="price-card">
+        <div class="price-tier" data-i18n="pt_solo">Solo</div>
+        <div class="price-target" data-i18n="pt_solo_desc">Up to 3 people</div>
+        <div class="price-row"><span class="price-cur">&#8364;</span><span class="price-num">30</span></div>
+        <div class="price-period" data-i18n="pp_mo">per month</div>
+        <div class="price-div"></div>
+        <ul class="price-feats">
+          <li><div class="pf-check">&#10003;</div><span data-i18n="pf1_1">Up to 3 team members</span></li>
+          <li><div class="pf-check">&#10003;</div><span data-i18n="pf1_2">Customer &amp; vehicle records</span></li>
+          <li><div class="pf-check">&#10003;</div><span data-i18n="pf1_3">Job &amp; service tracking</span></li>
+          <li><div class="pf-check">&#10003;</div><span data-i18n="pf1_4">Parts inventory</span></li>
+          <li><div class="pf-check">&#10003;</div><span data-i18n="pf1_5">Invoicing</span></li>
+          <li><div class="pf-check">&#10003;</div><span data-i18n="pf1_6">Email support</span></li>
+        </ul>
+        <button class="btn-plan" onclick="document.getElementById('contact').scrollIntoView({behavior:'smooth'})" data-i18n="pp_demo">Book a Demo</button>
+      </div>
+      <div class="price-card pop">
+        <div class="pop-badge" data-i18n="pp_pop">Most Popular</div>
+        <div class="price-tier" data-i18n="pt_team">Team</div>
+        <div class="price-target" data-i18n="pt_team_desc">4+ people</div>
+        <div class="price-row"><span class="price-cur">&#8364;</span><span class="price-num">70</span></div>
+        <div class="price-period" data-i18n="pp_mo">per month</div>
+        <div class="price-div"></div>
+        <ul class="price-feats">
+          <li><div class="pf-check">&#10003;</div><span data-i18n="pf2_1">Unlimited team members</span></li>
+          <li><div class="pf-check">&#10003;</div><span data-i18n="pf2_2">Everything in Solo</span></li>
+          <li><div class="pf-check">&#10003;</div><span data-i18n="pf2_3">Employee workload view</span></li>
+          <li><div class="pf-check">&#10003;</div><span data-i18n="pf2_4">Advanced reports &amp; analytics</span></li>
+          <li><div class="pf-check">&#10003;</div><span data-i18n="pf2_5">Priority support</span></li>
+          <li><div class="pf-check">&#10003;</div><span data-i18n="pf2_6">Onboarding assistance</span></li>
+        </ul>
+        <button class="btn-plan" onclick="document.getElementById('contact').scrollIntoView({behavior:'smooth'})" data-i18n="pp_demo">Book a Demo</button>
+      </div>
+    </div>
+    <p class="pricing-note reveal" data-i18n="pr_note">All plans include a 14-day free trial. No credit card required.</p>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="si">
+    <div class="reveal">
+      <div class="eyebrow"><div class="eyebrow-line"></div><span class="eyebrow-text" data-i18n="ct_label">Contact</span></div>
+      <h2 class="s-title" data-i18n="ct_title">Let's talk.</h2>
+      <p class="s-sub" data-i18n="ct_sub">Book a free demo or ask us anything. We respond within 24 hours in Czech, English, or Russian.</p>
+    </div>
+    <div class="contact-grid">
+      <div class="tally-wrap reveal">
+        <iframe src="https://tally.so/embed/LZGbMJ?alignLeft=1&hideTitle=1&transparentBackground=1&dynamicHeight=1" loading="lazy" title="GarageOS Contact Form"></iframe>
+      </div>
+      <div class="contact-cards reveal">
+        <div class="ci-card"><div class="ci-ico">&#x1F4E7;</div><div><div class="ci-label" data-i18n="ci_email">Email</div><div class="ci-value">hello@garageos.io</div></div></div>
+        <div class="ci-card"><div class="ci-ico">&#x23F1;&#xFE0F;</div><div><div class="ci-label" data-i18n="ci_resp">Response Time</div><div class="ci-value" data-i18n="ci_resp_v">Within 24 hours</div></div></div>
+        <div class="ci-card"><div class="ci-ico">&#x1F30D;</div><div><div class="ci-label" data-i18n="ci_lang">Languages</div><div class="ci-value">Czech &middot; English &middot; Russian</div></div></div>
+        <div class="ci-card"><div class="ci-ico">&#x1F3AF;</div><div><div class="ci-label" data-i18n="ci_demo">Free Demo</div><div class="ci-value" data-i18n="ci_demo_v">30-minute walkthrough, no pressure</div></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <a class="footer-logo" href="#"><div class="footer-logo-icon">&#x1F527;</div><span class="footer-logo-text">GarageOS</span></a>
+  <p data-i18n="footer_copy">&#169; 2026 GarageOS. All rights reserved.</p>
+  <div class="footer-links"><a href="#" data-i18n="footer_privacy">Privacy Policy</a><a href="#" data-i18n="footer_terms">Terms of Use</a></div>
+</footer>
+
+<script>
+var T = {
+  en: {
+    nav_features:"Features", nav_how:"How it works", nav_pricing:"Pricing", nav_contact:"Contact",
+    btn_demo:"Book a Demo",
+    hero_badge:"CRM for Garage Services", hero_line1:"Run your garage.", hero_line2:"Like a pro.",
+    hero_sub:"From the moment a customer walks in to the second they pay \u2014 GarageOS tracks everything. Customers, jobs, parts, staff, and invoices. All connected.",
+    hero_cta1:"Book a Free Demo", hero_cta2:"See Features",
+    hero_trust:"Early access now open \u2014 built for small garages",
+    stat1:"Now Open", stat2:"Setup Fee", stat3:"Faster Invoicing", stat4:"Support Available",
+    feat_label:"Features", feat_title:"One system. Every step covered.",
+    feat_sub:"GarageOS connects every part of your business \u2014 from first customer contact to final payment.",
+    f1t:"Customer Management", f1d:"Full history for every customer \u2014 their vehicles, past services, contact details, and notes. Build real relationships.",
+    f2t:"Business Reports", f2d:"Generate detailed reports on jobs, car history, or employee activity \u2014 weekly or monthly. Always know what happened and when.",
+    f3t:"Job & Service Tracking", f3d:"Track every repair from intake to completion. Log the services provided, parts used, and time spent per job.",
+    f4t:"Parts & Stock", f4d:"Manage your parts inventory in real time. Parts get automatically linked to jobs so your stock count is always accurate.",
+    f5t:"Invoicing", f5d:"Generate professional invoices in seconds \u2014 pre-filled from the job data. No manual typing, no mistakes.",
+    f6t:"Employee Overview", f6d:"See who is working on what. Assign jobs to technicians and track their workload at a glance.",
+    how_label:"How It Works", how_title:"From arrival to payment \u2014 fully tracked.",
+    how_sub:"GarageOS follows the natural flow of your workday. No complicated setup, no IT skills needed.",
+    s1t:"Customer arrives", s1d:"Find the customer in seconds or create a new record. Vehicle details, contact info, and full history are right there.",
+    s2t:"Open a service card", s2d:"Create a service card for the visit. Add individual jobs to it \u2014 each assigned to a technician \u2014 and track parts and time as work progresses.",
+    s3t:"Complete the service", s3d:"Log all services provided and parts used. Stock is updated automatically. Job status changes to done.",
+    s4t:"Send invoice & get paid", s4d:"One click generates a complete invoice from the job data. Customer pays, transaction is recorded. Done.",
+    mock_title:"Active Jobs Today", tag_done:"Done", tag_prog:"In progress", tag_wait:"Waiting",
+    kpi1:"Jobs today", kpi2:"Completed", kpi3:"Revenue",
+    pr_label:"Pricing", pr_title:"Simple pricing. No surprises.",
+    pr_sub:"Two plans built for small garages. Pay monthly, cancel any time.",
+    pt_solo:"Solo", pt_solo_desc:"Up to 3 people", pp_mo:"per month",
+    pf1_1:"Up to 3 team members", pf1_2:"Customer & vehicle records", pf1_3:"Job & service tracking", pf1_4:"Parts inventory", pf1_5:"Invoicing", pf1_6:"Email support",
+    pp_demo:"Book a Demo",
+    pt_team:"Team", pt_team_desc:"4+ people", pp_pop:"Most Popular",
+    pf2_1:"Unlimited team members", pf2_2:"Everything in Solo", pf2_3:"Employee workload view", pf2_4:"Advanced reports & analytics", pf2_5:"Priority support", pf2_6:"Onboarding assistance",
+    pr_note:"All plans include a 14-day free trial. No credit card required.",
+    ct_label:"Contact", ct_title:"Let\u2019s talk.", ct_sub:"Book a free demo or ask us anything. We respond within 24 hours in Czech, English, or Russian.",
+    cf_name:"Full Name", cf_email:"Email", cf_garage:"Garage Name", cf_team:"Team Size", cf_msg:"Message", cf_send:"Send Message",
+    tally_msg:"Ready to get started? Click below to open the contact form.", tally_note:"Opens a short form \u2014 takes under 2 minutes",
+    ci_email:"Email", ci_resp:"Response Time", ci_resp_v:"Within 24 hours", ci_lang:"Languages", ci_demo:"Free Demo", ci_demo_v:"30-minute walkthrough, no pressure",
+    footer_copy:"\u00a9 2026 GarageOS. All rights reserved.", footer_privacy:"Privacy Policy", footer_terms:"Terms of Use"
+  },
+  cs: {
+    nav_features:"Funkce", nav_how:"Jak to funguje", nav_pricing:"Cen\u00edk", nav_contact:"Kontakt",
+    btn_demo:"Rezervovat demo",
+    hero_badge:"CRM pro autoservisy", hero_line1:"\u0158i\u010fte sv\u016fj servis.", hero_line2:"Jako profesion\u00e1l.",
+    hero_sub:"Od chv\u00edle, kdy z\u00e1kazn\u00edk p\u0159ijde, a\u017e po zaplacen\u00ed faktury \u2014 GarageOS sleduje v\u0161e. Z\u00e1kazn\u00edky, zak\u00e1zky, d\u00edly, zam\u011bstnance a faktury. V\u0161e propojeno.",
+    hero_cta1:"Rezervovat demo zdarma", hero_cta2:"Zobrazit funkce",
+    hero_trust:"Brzy spou\u0161t\u00edme \u2014 p\u0159ihl\u00e1ste se k brzkému p\u0159\u00edstupu",
+    stat1:"Brzy p\u0159\u00edstup otev\u0159en", stat2:"Bez poplatk\u016f za nastaven\u00ed", stat3:"Rychlej\u0161\u00ed fakturace", stat4:"Podpora k dispozici",
+    feat_label:"Funkce", feat_title:"Jeden syst\u00e9m. Ka\u017ed\u00fd krok pokryt\u00fd.",
+    feat_sub:"GarageOS propojuje ka\u017edou \u010d\u00e1st va\u0161eho podnik\u00e1n\u00ed \u2014 od prvn\u00edho kontaktu se z\u00e1kazn\u00edkem a\u017e po platbu.",
+    f1t:"Spr\u00e1va z\u00e1kazn\u00edk\u016f", f1d:"Kompletn\u00ed historia ka\u017ed\u00e9ho z\u00e1kazn\u00edka \u2014 vozidla, minul\u00e9 slu\u017eby, kontaktn\u00ed \u00fadaje a pozn\u00e1mky.",
+    f2t:"Obchodn\u00ed reporty", f2d:"Generujte podrobn\u00e9 reporty o zak\u00e1zk\u00e1ch, historii vozidla nebo aktivit\u011b zam\u011bstnanc\u016f \u2014 t\u00fddn\u011b nebo m\u011bs\u00ed\u010dn\u011b.",
+    f3t:"Sledov\u00e1n\u00ed zak\u00e1zek", f3d:"Sledujte ka\u017edou opravu od p\u0159ijet\u00ed do dokon\u010den\u00ed. Zaznamenejte poskytnut\u00e9 slu\u017eby, pou\u017eit\u00e9 d\u00edly a \u010das.",
+    f4t:"D\u00edly a sklad", f4d:"Spravujte sklad d\u00edl\u016f v re\u00e1ln\u00e9m \u010dase. D\u00edly se automaticky propoj\u00ed se zak\u00e1zkami.",
+    f5t:"Fakturace", f5d:"Generujte profesion\u00e1ln\u00ed faktury za sekundy \u2014 p\u0159edvypln\u011bn\u00e9 z dat zak\u00e1zky. Bez ru\u010dn\u00edho opisov\u00e1n\u00ed.",
+    f6t:"P\u0159ehled zam\u011bstnanc\u016f", f6d:"Zjist\u011bte, kdo pracuje na \u010dem. P\u0159id\u011blujte zak\u00e1zky technik\u016fm a sledujte jejich vyt\u00ed\u017een\u00ed.",
+    how_label:"Jak to funguje", how_title:"Od p\u0159\u00edjezdu po platbu \u2014 v\u0161e zaznamen\u00e1no.",
+    how_sub:"GarageOS sleduje p\u0159irozen\u00fd tok va\u0161eho pracovn\u00edho dne. \u017d\u00e1dn\u00e9 slo\u017eit\u00e9 nastaven\u00ed.",
+    s1t:"Z\u00e1kazn\u00edk p\u0159ijede", s1d:"Najd\u011bte z\u00e1kazn\u00edka za sekundy nebo vytvo\u0159te nov\u00fd z\u00e1znam.",
+    s2t:"Otev\u0159ete servisn\u00ed kartu", s2d:"Vytvo\u0159te servisn\u00ed kartu pro n\u00e1v\u0161t\u011bvu. P\u0159idejte jednotliv\u00e9 pr\u00e1ce \u2014 ka\u017ed\u00e1 p\u0159i\u0159azena technikovi \u2014 a sledujte d\u00edly a \u010das.",
+    s3t:"Dokon\u010dete servis", s3d:"Zaznamenejte v\u0161echny poskytnut\u00e9 slu\u017eby a pou\u017eit\u00e9 d\u00edly. Sklad se aktualizuje automaticky.",
+    s4t:"Odešlete fakturu a p\u0159ijm\u011bte platbu", s4d:"Jedin\u00fdm kliknut\u00edm vygenerujete kompletní fakturu. Z\u00e1kazn\u00edk zaplatí, transakce je zaznamen\u00e1na.",
+    mock_title:"Dne\u0161n\u00ed zak\u00e1zky", tag_done:"Dokon\u010deno", tag_prog:"Prob\u00edh\u00e1", tag_wait:"\u010cek\u00e1",
+    kpi1:"Zak\u00e1zky dnes", kpi2:"Dokon\u010deno", kpi3:"Tr\u017eby",
+    pr_label:"Cen\u00edk", pr_title:"Jednoduch\u00e9 ceny. \u017d\u00e1dn\u00e1 p\u0159ekvapen\u00ed.",
+    pr_sub:"Dva pl\u00e1ny pro mal\u00e9 autoservisy. Pla\u0165te m\u011bs\u00ed\u010dn\u011b, zru\u0161te kdykoliv.",
+    pt_solo:"Solo", pt_solo_desc:"A\u017e 3 osoby", pp_mo:"za m\u011bs\u00edc",
+    pf1_1:"A\u017e 3 \u010dlenov\u00e9 t\u00fdmu", pf1_2:"Z\u00e1znamy z\u00e1kazn\u00edk\u016f a vozidel", pf1_3:"Sledov\u00e1n\u00ed zak\u00e1zek", pf1_4:"Sklad d\u00edl\u016f", pf1_5:"Fakturace", pf1_6:"E-mailov\u00e1 podpora",
+    pp_demo:"Rezervovat demo",
+    pt_team:"T\u00fdm", pt_team_desc:"4+ osoby", pp_pop:"Nejobл\u00edben\u011bj\u0161\u00ed",
+    pf2_1:"Neomezen\u00fd po\u010det \u010dlen\u016f t\u00fdmu", pf2_2:"V\u0161e ze Solo pl\u00e1nu", pf2_3:"P\u0159ehled vyt\u00ed\u017een\u00ed zam\u011bstnanc\u016f", pf2_4:"Pokro\u010dil\u00e9 reporty a analytika", pf2_5:"Prioritn\u00ed podpora", pf2_6:"Pomoc s n\u00e1stupem",
+    pr_note:"V\u0161echny pl\u00e1ny zahrnuj\u00ed 14denn\u00ed bezplatnou zku\u0161ebn\u00ed dobu.",
+    ct_label:"Kontakt", ct_title:"Pojďme si promluvit.", ct_sub:"Rezervujte si bezplatn\u00e9 demo nebo se n\u00e1s zeptejte na cokoliv.",
+    cf_name:"Cel\u00e9 jm\u00e9no", cf_email:"E-mail", cf_garage:"N\u00e1zev servisu", cf_team:"Velikost t\u00fdmu", cf_msg:"Zpr\u00e1va", cf_send:"Odeslat zpr\u00e1vu",
+    tally_msg:"Chcete za\u010d\u00edt? Klikn\u011bte n\u00ed\u017ee a otev\u0159ete kontaktn\u00ed formul\u00e1\u0159.", tally_note:"Kr\u00e1tk\u00fd formul\u00e1\u0159 \u2014 zabere m\u00e9n\u011b ne\u017e 2 minuty",
+    ci_email:"E-mail", ci_resp:"Doba odezvy", ci_resp_v:"Do 24 hodin", ci_lang:"Jazyky", ci_demo:"Demo zdarma", ci_demo_v:"30 minut, bez z\u00e1vazk\u016f",
+    footer_copy:"\u00a9 2026 GarageOS. V\u0161echna pr\u00e1va vyhrazena.", footer_privacy:"Z\u00e1sady ochrany soukrom\u00ed", footer_terms:"Podm\u00ednky pou\u017eit\u00ed"
+  },
+  ru: {
+    nav_features:"\u0424\u0443\u043d\u043a\u0446\u0438\u0438", nav_how:"\u041a\u0430\u043a \u0440\u0430\u0431\u043e\u0442\u0430\u0435\u0442", nav_pricing:"\u0426\u0435\u043d\u044b", nav_contact:"\u041a\u043e\u043d\u0442\u0430\u043a\u0442",
+    btn_demo:"\u0417\u0430\u043a\u0430\u0437\u0430\u0442\u044c \u0434\u0435\u043c\u043e",
+    hero_badge:"CRM \u0434\u043b\u044f \u0430\u0432\u0442\u043e\u0441\u0435\u0440\u0432\u0438\u0441\u043e\u0432", hero_line1:"\u0423\u043f\u0440\u0430\u0432\u043b\u044f\u0439\u0442\u0435 \u0441\u0435\u0440\u0432\u0438\u0441\u043e\u043c.", hero_line2:"\u041a\u0430\u043a \u043f\u0440\u043e\u0444\u0435\u0441\u0441\u0438\u043e\u043d\u0430\u043b.",
+    hero_sub:"\u0421 \u043c\u043e\u043c\u0435\u043d\u0442\u0430 \u043f\u0440\u0438\u0445\u043e\u0434\u0430 \u043a\u043b\u0438\u0435\u043d\u0442\u0430 \u0434\u043e \u043e\u043f\u043b\u0430\u0442\u044b \u2014 GarageOS \u043e\u0442\u0441\u043b\u0435\u0436\u0438\u0432\u0430\u0435\u0442 \u0432\u0441\u0451. \u041a\u043b\u0438\u0435\u043d\u0442\u044b, \u0437\u0430\u043a\u0430\u0437\u044b, \u0437\u0430\u043f\u0447\u0430\u0441\u0442\u0438, \u0441\u043e\u0442\u0440\u0443\u0434\u043d\u0438\u043a\u0438 \u0438 \u0441\u0447\u0435\u0442\u0430. \u0412\u0441\u0451 \u0441\u0432\u044f\u0437\u0430\u043d\u043e.",
+    hero_cta1:"\u0417\u0430\u043a\u0430\u0437\u0430\u0442\u044c \u0434\u0435\u043c\u043e \u0431\u0435\u0441\u043f\u043b\u0430\u0442\u043d\u043e", hero_cta2:"\u0421\u043c\u043e\u0442\u0440\u0435\u0442\u044c \u0444\u0443\u043d\u043a\u0446\u0438\u0438",
+    hero_trust:"\u0420\u0430\u043d\u043d\u0438\u0439 \u0434\u043e\u0441\u0442\u0443\u043f \u043e\u0442\u043a\u0440\u044b\u0442 \u2014 \u0441\u043e\u0437\u0434\u0430\u043d\u043e \u0434\u043b\u044f \u043c\u0430\u043b\u044b\u0445 \u0441\u0435\u0440\u0432\u0438\u0441\u043e\u0432",
+    stat1:"\u0420\u0430\u043d\u043d\u0438\u0439 \u0434\u043e\u0441\u0442\u0443\u043f \u043e\u0442\u043a\u0440\u044b\u0442", stat2:"\u0411\u0435\u0437 \u043f\u043b\u0430\u0442\u044b \u0437\u0430 \u043d\u0430\u0441\u0442\u0440\u043e\u0439\u043a\u0443", stat3:"\u0411\u044b\u0441\u0442\u0440\u0435\u0435 \u0441\u0447\u0435\u0442\u0430", stat4:"\u041f\u043e\u0434\u0434\u0435\u0440\u0436\u043a\u0430 \u0432\u0441\u0435\u0433\u0434\u0430",
+    feat_label:"\u0424\u0443\u043d\u043a\u0446\u0438\u0438", feat_title:"\u041e\u0434\u043d\u0430 \u0441\u0438\u0441\u0442\u0435\u043c\u0430. \u041a\u0430\u0436\u0434\u044b\u0439 \u0448\u0430\u0433 \u043f\u043e\u0434 \u043a\u043e\u043d\u0442\u0440\u043e\u043b\u0435\u043c.",
+    feat_sub:"GarageOS \u0441\u0432\u044f\u0437\u044b\u0432\u0430\u0435\u0442 \u043a\u0430\u0436\u0434\u0443\u044e \u0447\u0430\u0441\u0442\u044c \u0432\u0430\u0448\u0435\u0433\u043e \u0431\u0438\u0437\u043d\u0435\u0441\u0430 \u2014 \u043e\u0442 \u043f\u0435\u0440\u0432\u043e\u0433\u043e \u043a\u043e\u043d\u0442\u0430\u043a\u0442\u0430 \u0434\u043e \u0444\u0438\u043d\u0430\u043b\u044c\u043d\u043e\u0439 \u043e\u043f\u043b\u0430\u0442\u044b.",
+    f1t:"\u0423\u043f\u0440\u0430\u0432\u043b\u0435\u043d\u0438\u0435 \u043a\u043b\u0438\u0435\u043d\u0442\u0430\u043c\u0438", f1d:"\u041f\u043e\u043b\u043d\u0430\u044f \u0438\u0441\u0442\u043e\u0440\u0438\u044f \u043a\u0430\u0436\u0434\u043e\u0433\u043e \u043a\u043b\u0438\u0435\u043d\u0442\u0430 \u2014 \u0430\u0432\u0442\u043e\u043c\u043e\u0431\u0438\u043b\u0438, \u0443\u0441\u043b\u0443\u0433\u0438, \u043a\u043e\u043d\u0442\u0430\u043a\u0442\u044b.",
+    f2t:"\u0411\u0438\u0437\u043d\u0435\u0441-\u043e\u0442\u0447\u0451\u0442\u044b", f2d:"\u0421\u043e\u0437\u0434\u0430\u0432\u0430\u0439\u0442\u0435 \u043f\u043e\u0434\u0440\u043e\u0431\u043d\u044b\u0435 \u043e\u0442\u0447\u0451\u0442\u044b \u043f\u043e \u0437\u0430\u043a\u0430\u0437\u0430\u043c, \u0438\u0441\u0442\u043e\u0440\u0438\u0438 \u0430\u0432\u0442\u043e\u043c\u043e\u0431\u0438\u043b\u044f \u0438\u043b\u0438 \u0430\u043a\u0442\u0438\u0432\u043d\u043e\u0441\u0442\u0438 \u0441\u043e\u0442\u0440\u0443\u0434\u043d\u0438\u043a\u043e\u0432 \u2014 \u0435\u0436\u0435\u043d\u0435\u0434\u0435\u043b\u044c\u043d\u043e \u0438\u043b\u0438 \u0435\u0436\u0435\u043c\u0435\u0441\u044f\u0447\u043d\u043e.",
+    f3t:"\u0423\u0447\u0451\u0442 \u0437\u0430\u043a\u0430\u0437\u043e\u0432", f3d:"\u041e\u0442\u0441\u043b\u0435\u0436\u0438\u0432\u0430\u0439\u0442\u0435 \u043a\u0430\u0436\u0434\u044b\u0439 \u0440\u0435\u043c\u043e\u043d\u0442 \u043e\u0442 \u043f\u0440\u0438\u0451\u043c\u043a\u0438 \u0434\u043e \u0437\u0430\u0432\u0435\u0440\u0448\u0435\u043d\u0438\u044f.",
+    f4t:"\u0417\u0430\u043f\u0447\u0430\u0441\u0442\u0438 \u0438 \u0441\u043a\u043b\u0430\u0434", f4d:"\u0423\u043f\u0440\u0430\u0432\u043b\u044f\u0439\u0442\u0435 \u0441\u043a\u043b\u0430\u0434\u043e\u043c \u0437\u0430\u043f\u0447\u0430\u0441\u0442\u0435\u0439 \u0432 \u0440\u0435\u0430\u043b\u044c\u043d\u043e\u043c \u0432\u0440\u0435\u043c\u0435\u043d\u0438.",
+    f5t:"\u0412\u044b\u0441\u0442\u0430\u0432\u043b\u0435\u043d\u0438\u0435 \u0441\u0447\u0435\u0442\u043e\u0432", f5d:"\u0421\u043e\u0437\u0434\u0430\u0432\u0430\u0439\u0442\u0435 \u0441\u0447\u0435\u0442\u0430 \u0437\u0430 \u0441\u0435\u043a\u0443\u043d\u0434\u044b \u2014 \u043f\u0440\u0435\u0434\u0437\u0430\u043f\u043e\u043b\u043d\u0435\u043d\u043d\u044b\u0435 \u0438\u0437 \u0434\u0430\u043d\u043d\u044b\u0445 \u0437\u0430\u043a\u0430\u0437\u0430.",
+    f6t:"\u041e\u0431\u0437\u043e\u0440 \u0441\u043e\u0442\u0440\u0443\u0434\u043d\u0438\u043a\u043e\u0432", f6d:"\u0412\u0438\u0434\u0438\u0442\u0435, \u043a\u0442\u043e \u043d\u0430\u0434 \u0447\u0435\u043c \u0440\u0430\u0431\u043e\u0442\u0430\u0435\u0442. \u041d\u0430\u0437\u043d\u0430\u0447\u0430\u0439\u0442\u0435 \u0437\u0430\u043a\u0430\u0437\u044b \u043c\u0435\u0445\u0430\u043d\u0438\u043a\u0430\u043c.",
+    how_label:"\u041a\u0430\u043a \u0440\u0430\u0431\u043e\u0442\u0430\u0435\u0442", how_title:"\u041e\u0442 \u043f\u0440\u0438\u0435\u0437\u0434\u0430 \u0434\u043e \u043e\u043f\u043b\u0430\u0442\u044b \u2014 \u0432\u0441\u0451 \u0437\u0430\u0444\u0438\u043a\u0441\u0438\u0440\u043e\u0432\u0430\u043d\u043e.",
+    how_sub:"GarageOS \u0441\u043b\u0435\u0434\u0443\u0435\u0442 \u0435\u0441\u0442\u0435\u0441\u0442\u0432\u0435\u043d\u043d\u043e\u043c\u0443 \u0440\u0438\u0442\u043c\u0443 \u0440\u0430\u0431\u043e\u0447\u0435\u0433\u043e \u0434\u043d\u044f.",
+    s1t:"\u041a\u043b\u0438\u0435\u043d\u0442 \u043f\u0440\u0438\u0435\u0437\u0436\u0430\u0435\u0442", s1d:"\u041d\u0430\u0439\u0434\u0438\u0442\u0435 \u043a\u043b\u0438\u0435\u043d\u0442\u0430 \u0437\u0430 \u0441\u0435\u043a\u0443\u043d\u0434\u044b \u0438\u043b\u0438 \u0441\u043e\u0437\u0434\u0430\u0439\u0442\u0435 \u043d\u043e\u0432\u0443\u044e \u0437\u0430\u043f\u0438\u0441\u044c.",
+    s2t:"\u041e\u0442\u043a\u0440\u043e\u0439\u0442\u0435 \u0441\u0435\u0440\u0432\u0438\u0441\u043d\u0443\u044e \u043a\u0430\u0440\u0442\u0443", s2d:"\u0421\u043e\u0437\u0434\u0430\u0439\u0442\u0435 \u0441\u0435\u0440\u0432\u0438\u0441\u043d\u0443\u044e \u043a\u0430\u0440\u0442\u0443. \u0414\u043e\u0431\u0430\u0432\u044c\u0442\u0435 \u043e\u0442\u0434\u0435\u043b\u044c\u043d\u044b\u0435 \u0440\u0430\u0431\u043e\u0442\u044b \u2014 \u043a\u0430\u0436\u0434\u0430\u044f \u043d\u0430\u0437\u043d\u0430\u0447\u0435\u043d\u0430 \u043c\u0435\u0445\u0430\u043d\u0438\u043a\u0443.",
+    s3t:"\u0417\u0430\u0432\u0435\u0440\u0448\u0430\u0435\u0442\u0435 \u043e\u0431\u0441\u043b\u0443\u0436\u0438\u0432\u0430\u043d\u0438\u0435", s3d:"\u0424\u0438\u043a\u0441\u0438\u0440\u0443\u0439\u0442\u0435 \u0443\u0441\u043b\u0443\u0433\u0438 \u0438 \u0434\u0435\u0442\u0430\u043b\u0438. \u0421\u043a\u043b\u0430\u0434 \u043e\u0431\u043d\u043e\u0432\u0438\u0442\u0441\u044f \u0430\u0432\u0442\u043e\u043c\u0430\u0442\u0438\u0447\u0435\u0441\u043a\u0438.",
+    s4t:"\u0421\u0447\u0451\u0442 \u0438 \u043e\u043f\u043b\u0430\u0442\u0430", s4d:"\u041e\u0434\u0438\u043d \u043a\u043b\u0438\u043a \u2014 \u0433\u043e\u0442\u043e\u0432 \u043f\u043e\u043b\u043d\u044b\u0439 \u0441\u0447\u0451\u0442. \u041a\u043b\u0438\u0435\u043d\u0442 \u043f\u043b\u0430\u0442\u0438\u0442, \u0442\u0440\u0430\u043d\u0437\u0430\u043a\u0446\u0438\u044f \u0437\u0430\u043f\u0438\u0441\u0430\u043d\u0430.",
+    mock_title:"\u0410\u043a\u0442\u0438\u0432\u043d\u044b\u0435 \u0437\u0430\u043a\u0430\u0437\u044b", tag_done:"\u0413\u043e\u0442\u043e\u0432\u043e", tag_prog:"\u0412 \u0440\u0430\u0431\u043e\u0442\u0435", tag_wait:"\u041e\u0436\u0438\u0434\u0430\u0435\u0442",
+    kpi1:"\u0417\u0430\u043a\u0430\u0437\u043e\u0432 \u0441\u0435\u0433\u043e\u0434\u043d\u044f", kpi2:"\u0412\u044b\u043f\u043e\u043b\u043d\u0435\u043d\u043e", kpi3:"\u0412\u044b\u0440\u0443\u0447\u043a\u0430",
+    pr_label:"\u0426\u0435\u043d\u044b", pr_title:"\u041f\u0440\u043e\u0441\u0442\u044b\u0435 \u0446\u0435\u043d\u044b. \u041d\u0438\u043a\u0430\u043a\u0438\u0445 \u0441\u044e\u0440\u043f\u0440\u0438\u0437\u043e\u0432.",
+    pr_sub:"\u0414\u0432\u0430 \u0442\u0430\u0440\u0438\u0444\u0430 \u0434\u043b\u044f \u043d\u0435\u0431\u043e\u043b\u044c\u0448\u0438\u0445 \u0441\u0435\u0440\u0432\u0438\u0441\u043e\u0432. \u041f\u043b\u0430\u0442\u0438\u0442\u0435 \u0435\u0436\u0435\u043c\u0435\u0441\u044f\u0447\u043d\u043e, \u043e\u0442\u043c\u0435\u043d\u044f\u0439\u0442\u0435 \u0432 \u043b\u044e\u0431\u043e\u0435 \u0432\u0440\u0435\u043c\u044f.",
+    pt_solo:"\u0421\u043e\u043b\u043e", pt_solo_desc:"\u0414\u043e 3 \u0447\u0435\u043b\u043e\u0432\u0435\u043a", pp_mo:"\u0432 \u043c\u0435\u0441\u044f\u0446",
+    pf1_1:"\u0414\u043e 3 \u0441\u043e\u0442\u0440\u0443\u0434\u043d\u0438\u043a\u043e\u0432", pf1_2:"\u0411\u0430\u0437\u0430 \u043a\u043b\u0438\u0435\u043d\u0442\u043e\u0432 \u0438 \u0430\u0432\u0442\u043e\u043c\u043e\u0431\u0438\u043b\u0435\u0439", pf1_3:"\u0423\u0447\u0451\u0442 \u0437\u0430\u043a\u0430\u0437\u043e\u0432", pf1_4:"\u0421\u043a\u043b\u0430\u0434 \u0437\u0430\u043f\u0447\u0430\u0441\u0442\u0435\u0439", pf1_5:"\u0412\u044b\u0441\u0442\u0430\u0432\u043b\u0435\u043d\u0438\u0435 \u0441\u0447\u0435\u0442\u043e\u0432", pf1_6:"Email \u043f\u043e\u0434\u0434\u0435\u0440\u0436\u043a\u0430",
+    pp_demo:"\u0417\u0430\u043a\u0430\u0437\u0430\u0442\u044c \u0434\u0435\u043c\u043e",
+    pt_team:"\u041a\u043e\u043c\u0430\u043d\u0434\u0430", pt_team_desc:"4+ \u0447\u0435\u043b\u043e\u0432\u0435\u043a", pp_pop:"\u0421\u0430\u043c\u044b\u0439 \u043f\u043e\u043f\u0443\u043b\u044f\u0440\u043d\u044b\u0439",
+    pf2_1:"\u041d\u0435\u043e\u0433\u0440\u0430\u043d\u0438\u0447\u0435\u043d\u043d\u043e\u0435 \u043a\u043e\u043b-\u0432\u043e \u0441\u043e\u0442\u0440\u0443\u0434\u043d\u0438\u043a\u043e\u0432", pf2_2:"\u0412\u0441\u0451 \u0438\u0437 \u0442\u0430\u0440\u0438\u0444\u0430 \u0421\u043e\u043b\u043e", pf2_3:"\u041e\u0431\u0437\u043e\u0440 \u0437\u0430\u0433\u0440\u0443\u0436\u0435\u043d\u043d\u043e\u0441\u0442\u0438", pf2_4:"\u0420\u0430\u0441\u0448\u0438\u0440\u0435\u043d\u043d\u044b\u0435 \u043e\u0442\u0447\u0451\u0442\u044b", pf2_5:"\u041f\u0440\u0438\u043e\u0440\u0438\u0442\u0435\u0442\u043d\u0430\u044f \u043f\u043e\u0434\u0434\u0435\u0440\u0436\u043a\u0430", pf2_6:"\u041f\u043e\u043c\u043e\u0449\u044c \u0432 \u043d\u0430\u0447\u0430\u043b\u0435",
+    pr_note:"\u0412\u0441\u0435 \u0442\u0430\u0440\u0438\u0444\u044b \u0432\u043a\u043b\u044e\u0447\u0430\u044e\u0442 14-\u0434\u043d\u0435\u0432\u043d\u044b\u0439 \u0431\u0435\u0441\u043f\u043b\u0430\u0442\u043d\u044b\u0439 \u043f\u0435\u0440\u0438\u043e\u0434.",
+    ct_label:"\u041a\u043e\u043d\u0442\u0430\u043a\u0442", ct_title:"\u0414\u0430\u0432\u0430\u0439\u0442\u0435 \u043f\u043e\u0433\u043e\u0432\u043e\u0440\u0438\u043c.", ct_sub:"\u0417\u0430\u043a\u0430\u0436\u0438\u0442\u0435 \u0431\u0435\u0441\u043f\u043b\u0430\u0442\u043d\u043e\u0435 \u0434\u0435\u043c\u043e \u0438\u043b\u0438 \u0437\u0430\u0434\u0430\u0439\u0442\u0435 \u043b\u044e\u0431\u043e\u0439 \u0432\u043e\u043f\u0440\u043e\u0441.",
+    cf_name:"\u041f\u043e\u043b\u043d\u043e\u0435 \u0438\u043c\u044f", cf_email:"E-mail", cf_garage:"\u041d\u0430\u0437\u0432\u0430\u043d\u0438\u0435 \u0441\u0435\u0440\u0432\u0438\u0441\u0430", cf_team:"\u0420\u0430\u0437\u043c\u0435\u0440 \u043a\u043e\u043c\u0430\u043d\u0434\u044b", cf_msg:"\u0421\u043e\u043e\u0431\u0449\u0435\u043d\u0438\u0435", cf_send:"\u041e\u0442\u043f\u0440\u0430\u0432\u0438\u0442\u044c \u0441\u043e\u043e\u0431\u0449\u0435\u043d\u0438\u0435",
+    tally_msg:"\u0413\u043e\u0442\u043e\u0432\u044b \u043d\u0430\u0447\u0430\u0442\u044c? \u041d\u0430\u0436\u043c\u0438\u0442\u0435 \u043d\u0438\u0436\u0435, \u0447\u0442\u043e\u0431\u044b \u043e\u0442\u043a\u0440\u044b\u0442\u044c \u0444\u043e\u0440\u043c\u0443.", tally_note:"\u041a\u043e\u0440\u043e\u0442\u043a\u0430\u044f \u0444\u043e\u0440\u043c\u0430 \u2014 \u0437\u0430\u0439\u043c\u0451\u0442 \u043c\u0435\u043d\u044c\u0448\u0435 2 \u043c\u0438\u043d\u0443\u0442",
+    ci_email:"E-mail", ci_resp:"\u0412\u0440\u0435\u043c\u044f \u043e\u0442\u0432\u0435\u0442\u0430", ci_resp_v:"\u0412 \u0442\u0435\u0447\u0435\u043d\u0438\u0435 24 \u0447\u0430\u0441\u043e\u0432", ci_lang:"\u042f\u0437\u044b\u043a\u0438", ci_demo:"\u0414\u0435\u043c\u043e \u0431\u0435\u0441\u043f\u043b\u0430\u0442\u043d\u043e", ci_demo_v:"30 \u043c\u0438\u043d\u0443\u0442, \u0431\u0435\u0437 \u043e\u0431\u044f\u0437\u0430\u0442\u0435\u043b\u044c\u0441\u0442\u0432",
+    footer_copy:"\u00a9 2026 GarageOS. \u0412\u0441\u0435 \u043f\u0440\u0430\u0432\u0430 \u0437\u0430\u0449\u0438\u0449\u0435\u043d\u044b.", footer_privacy:"\u041f\u043e\u043b\u0438\u0442\u0438\u043a\u0430 \u043a\u043e\u043d\u0444\u0438\u0434\u0435\u043d\u0446\u0438\u0430\u043b\u044c\u043d\u043e\u0441\u0442\u0438", footer_terms:"\u0423\u0441\u043b\u043e\u0432\u0438\u044f \u0438\u0441\u043f\u043e\u043b\u044c\u0437\u043e\u0432\u0430\u043d\u0438\u044f"
+  }
+};
+
+var curLang = 'en';
+
+function applyLang(lang) {
+  curLang = lang;
+  var t = T[lang];
+  if (!t) return;
+  document.querySelectorAll('[data-i18n]').forEach(function(el) {
+    var k = el.getAttribute('data-i18n');
+    if (t[k] !== undefined) el.innerHTML = t[k];
+  });
+  document.getElementById('langCur').textContent = lang.toUpperCase();
+  document.querySelectorAll('.lang-opt').forEach(function(o) {
+    o.classList.toggle('active', o.getAttribute('data-lang') === lang);
+  });
+  document.documentElement.lang = lang;
+}
+
+// Language switcher
+var sw = document.getElementById('langSw');
+var dd = document.getElementById('langDd');
+sw.addEventListener('click', function(e) {
+  e.stopPropagation();
+  sw.classList.toggle('open');
+  dd.classList.toggle('open');
+});
+document.addEventListener('click', function() {
+  sw.classList.remove('open');
+  dd.classList.remove('open');
+});
+document.querySelectorAll('.lang-opt').forEach(function(opt) {
+  opt.addEventListener('click', function(e) {
+    e.stopPropagation();
+    applyLang(opt.getAttribute('data-lang'));
+    sw.classList.remove('open');
+    dd.classList.remove('open');
+  });
+});
+
+// Nav scroll
+window.addEventListener('scroll', function() {
+  document.getElementById('mainNav').classList.toggle('scrolled', window.scrollY > 40);
+}, {passive: true});
+
+// Car animation
+var carEl = document.getElementById('car911');
+var trackEl = document.getElementById('car-track');
+var carDone = false;
+function tryDrive() {
+  if (carDone) return;
+  var r = trackEl.getBoundingClientRect();
+  if (r.top < window.innerHeight && r.bottom > 0) {
+    carDone = true;
+    var x = -260;
+    var dest = window.innerWidth + 30;
+    function step() {
+      x += 4;
+      carEl.style.left = x + 'px';
+      if (x < dest) { requestAnimationFrame(step); }
+      else { setTimeout(function(){ carEl.style.left = '-260px'; carDone = false; }, 1600); }
+    }
+    requestAnimationFrame(step);
+  }
+}
+
+// Scroll reveal
+var revEls = document.querySelectorAll('.reveal');
+function onScroll() {
+  revEls.forEach(function(el) {
+    if (el.getBoundingClientRect().top < window.innerHeight - 55) el.classList.add('visible');
+  });
+  tryDrive();
+}
+window.addEventListener('scroll', onScroll, {passive: true});
+window.addEventListener('resize', onScroll);
+onScroll();
+</script>
+<script async src="https://tally.so/widgets/embed.js"></script>
+</body>
+</html>
