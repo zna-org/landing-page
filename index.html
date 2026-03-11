@@ -172,10 +172,14 @@
     .contact-form{display:flex;flex-direction:column;gap:18px;}
     .form-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
     .form-field{display:flex;flex-direction:column;gap:8px;}
-    .form-field label{font-size:.75rem;font-weight:600;color:var(--muted2);letter-spacing:.5px;text-transform:uppercase;}
-    .form-field input,.form-field textarea{background:var(--card);border:1px solid var(--border2);border-radius:10px;padding:13px 15px;color:var(--text);font-size:.92rem;font-family:inherit;outline:none;transition:border-color .2s,box-shadow .2s;width:100%;}
+    .form-field label{font-size:.75rem;font-weight:600;color:var(--muted2);letter-spacing:.5px;text-transform:uppercase;display:flex;align-items:center;gap:5px;}
+    .form-field label .req-star{color:var(--green);font-weight:800;font-size:.85rem;line-height:1;opacity:0;transition:opacity .25s;}
+    .form-field label .req-star.visible{opacity:1;}
+    .form-field input,.form-field textarea,.form-field select{background:var(--card);border:1px solid var(--border2);border-radius:10px;padding:13px 15px;color:var(--text);font-size:.92rem;font-family:inherit;outline:none;transition:border-color .2s,box-shadow .2s;width:100%;}
+    .form-field select{cursor:pointer;appearance:none;-webkit-appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%239aa3b2' stroke-width='1.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 15px center;padding-right:38px;}
+    .form-field select option{background:var(--card2);color:var(--text);padding:8px;}
     .form-field input::placeholder,.form-field textarea::placeholder{color:var(--muted);}
-    .form-field input:focus,.form-field textarea:focus{border-color:rgba(0,230,118,.38);box-shadow:0 0 0 3px rgba(0,230,118,.07);}
+    .form-field input:focus,.form-field textarea:focus,.form-field select:focus{border-color:rgba(0,230,118,.38);box-shadow:0 0 0 3px rgba(0,230,118,.07);}
     .form-field textarea{resize:vertical;min-height:118px;}
     .btn-submit{display:inline-flex;align-items:center;gap:9px;background:linear-gradient(135deg,var(--green),var(--blue));color:#000;font-weight:800;font-size:.95rem;padding:14px 28px;border-radius:11px;border:none;cursor:pointer;transition:opacity .2s,transform .2s,box-shadow .2s;box-shadow:0 6px 22px rgba(0,230,118,.2);align-self:flex-start;}
     .btn-submit:hover{opacity:.9;transform:translateY(-2px);box-shadow:0 10px 30px rgba(0,230,118,.3);}
@@ -253,7 +257,7 @@
       <span data-i18n="hero_line1">Run your garage.</span><br>
       <span class="grad" data-i18n="hero_line2">Like a pro.</span>
     </h1>
-    <p class="hero-sub" data-i18n="hero_sub">From the moment a customer walks in to the second they pay — GarageOS tracks everything. Customers, jobs, parts, staff, and invoices. All connected.</p>
+    <p class="hero-sub" data-i18n="hero_sub">From the moment a customer walks in to the second they pay &#8212; GarageOS tracks everything. Customers, jobs, parts, staff, and invoices. All connected.</p>
     <div class="hero-cta">
       <button class="btn-primary" onclick="document.getElementById('contact').scrollIntoView({behavior:'smooth'})">
         <span data-i18n="hero_cta1">Book a Free Demo</span><span>&#8594;</span>
@@ -264,7 +268,7 @@
     </div>
     <div class="hero-social">
       <div class="hero-avatars"><span>&#x1F468;</span><span>&#x1F469;</span><span>&#x1F468;&#x200D;&#x1F527;</span><span>&#x1F469;&#x200D;&#x1F4BC;</span></div>
-      <span data-i18n="hero_trust">Early access now open — built for small garages</span>
+      <span data-i18n="hero_trust">Early access now open &#8212; built for small garages</span>
     </div>
   </div>
 </section>
@@ -294,64 +298,39 @@
         <stop offset="100%" stop-color="#2979ff"/>
       </linearGradient>
     </defs>
-
-    <!-- Building wall -->
     <rect x="10" y="30" width="210" height="160" fill="url(#gWall)" rx="2"/>
-
-    <!-- Roof overhang -->
     <rect x="0" y="22" width="220" height="16" fill="url(#gRoof)" rx="2"/>
     <rect x="0" y="22" width="220" height="3" fill="rgba(0,230,118,0.18)" rx="1"/>
-
-    <!-- Brick texture lines (horizontal) -->
     <line x1="10" y1="50" x2="220" y2="50" stroke="rgba(255,255,255,0.03)" stroke-width="1"/>
     <line x1="10" y1="70" x2="220" y2="70" stroke="rgba(255,255,255,0.03)" stroke-width="1"/>
     <line x1="10" y1="90" x2="220" y2="90" stroke="rgba(255,255,255,0.03)" stroke-width="1"/>
     <line x1="10" y1="110" x2="220" y2="110" stroke="rgba(255,255,255,0.03)" stroke-width="1"/>
     <line x1="10" y1="130" x2="220" y2="130" stroke="rgba(255,255,255,0.03)" stroke-width="1"/>
-
-    <!-- Side window -->
     <rect x="18" y="38" width="38" height="28" rx="3" fill="#060a14" stroke="rgba(41,121,255,0.25)" stroke-width="1"/>
     <line x1="37" y1="38" x2="37" y2="66" stroke="rgba(41,121,255,0.15)" stroke-width="1"/>
     <rect x="18" y="38" width="38" height="5" rx="2" fill="rgba(41,121,255,0.07)"/>
-
-    <!-- GarageOS sign -->
     <rect x="14" y="76" width="60" height="18" rx="4" fill="rgba(0,0,0,0.5)" stroke="rgba(0,230,118,0.3)" stroke-width="1"/>
     <text x="44" y="89" font-family="Inter,sans-serif" font-size="7" font-weight="700" fill="url(#gGreen)" text-anchor="middle" letter-spacing="0.5">GarageOS</text>
-
-    <!-- Door opening (dark interior) -->
     <rect x="32" y="108" width="148" height="82" fill="url(#gDoorInner)" rx="2"/>
-    <!-- Interior depth shadow -->
     <rect x="32" y="108" width="148" height="8" fill="rgba(0,0,0,0.5)"/>
     <rect x="32" y="108" width="6" height="82" fill="rgba(0,0,0,0.4)"/>
     <rect x="174" y="108" width="6" height="82" fill="rgba(0,0,0,0.4)"/>
-    <!-- Floor light inside garage -->
     <ellipse cx="106" cy="185" rx="55" ry="6" fill="rgba(0,230,118,0.06)"/>
-
-    <!-- Door panel (slides up) -->
     <g id="garage-door">
-      <!-- Door panels -->
       <rect x="32" y="108" width="148" height="82" fill="#111928" rx="2"/>
-      <!-- Panel grooves -->
       <rect x="32" y="128" width="148" height="3" fill="rgba(0,0,0,0.6)" rx="1"/>
       <rect x="32" y="149" width="148" height="3" fill="rgba(0,0,0,0.6)" rx="1"/>
       <rect x="32" y="170" width="148" height="3" fill="rgba(0,0,0,0.6)" rx="1"/>
-      <!-- Door vertical ribs -->
       <line x1="73"  y1="108" x2="73"  y2="190" stroke="rgba(0,0,0,0.35)" stroke-width="1.5"/>
       <line x1="106" y1="108" x2="106" y2="190" stroke="rgba(0,0,0,0.35)" stroke-width="1.5"/>
       <line x1="139" y1="108" x2="139" y2="190" stroke="rgba(0,0,0,0.35)" stroke-width="1.5"/>
-      <!-- Door highlight top edge -->
       <rect x="32" y="108" width="148" height="2" fill="rgba(255,255,255,0.06)" rx="1"/>
-      <!-- Door handle bar -->
       <rect x="75" y="156" width="62" height="5" rx="2.5" fill="#0d1422" stroke="rgba(255,255,255,0.12)" stroke-width="0.8"/>
-      <!-- Green accent strip top of door -->
       <rect x="32" y="108" width="148" height="3" fill="rgba(0,230,118,0.22)" rx="1"/>
     </g>
-
-    <!-- Door frame -->
     <rect x="28" y="105" width="4" height="85" fill="#0d1422"/>
     <rect x="180" y="105" width="4" height="85" fill="#0d1422"/>
     <rect x="28" y="105" width="156" height="4" fill="#0d1422"/>
-    <!-- Frame green glow line -->
     <rect x="28" y="105" width="156" height="1.5" fill="rgba(0,230,118,0.4)"/>
   </svg>
   <svg id="car911" viewBox="0 0 500 110" xmlns="http://www.w3.org/2000/svg">
@@ -379,58 +358,41 @@
         <stop offset="100%" stop-color="transparent"/>
       </radialGradient>
     </defs>
-    <!-- Ground shadow -->
     <ellipse cx="250" cy="103" rx="220" ry="8" fill="rgba(0,0,0,0.5)"/>
-    <!-- Underbody -->
     <path d="M78 88 L92 82 L408 82 L420 88 L416 96 L82 96 Z" fill="#090c14"/>
-    <!-- Main body — 911 fastback shape -->
     <path d="M82 88 L90 80 Q95 70 104 62 Q116 52 134 46 L148 28 Q162 16 182 10 Q206 4 238 3 Q272 2 298 6 Q322 10 340 18 Q358 26 370 38 Q382 50 390 62 Q398 70 404 80 L408 82 L420 88 L416 96 L82 96 Z" fill="url(#cBody)"/>
-    <!-- Body highlight -->
     <path d="M148 28 Q220 8 318 8 Q365 8 390 28" stroke="rgba(255,255,255,0.09)" stroke-width="2" fill="none" stroke-linecap="round"/>
-    <!-- Fastback roof -->
     <path d="M148 28 Q164 16 184 10 Q208 4 240 3 Q274 2 300 6 Q324 10 342 18 Q360 26 370 38 Q378 46 380 54 L365 58 Q356 48 340 38 Q320 28 294 20 Q264 14 232 14 Q202 14 182 22 Q166 28 158 38 Z" fill="#111928"/>
-    <!-- Rear quarter window -->
     <path d="M160 38 Q168 26 184 18 Q198 12 216 10 L214 34 Q200 36 186 42 Z" fill="url(#cWin)" stroke="rgba(110,165,255,0.3)" stroke-width="0.8"/>
-    <!-- Main side window -->
     <path d="M216 10 Q252 6 288 8 Q316 10 336 18 Q352 24 362 36 L340 40 Q328 30 304 22 Q278 16 248 16 Q228 16 214 22 Z" fill="url(#cWin)" stroke="rgba(110,165,255,0.3)" stroke-width="0.8"/>
-    <!-- Windshield -->
     <path d="M362 36 Q374 30 388 40 Q392 46 390 54 L374 58 Q370 50 362 44 Z" fill="url(#cWin)" stroke="rgba(110,165,255,0.25)" stroke-width="0.8"/>
-    <!-- Pillars -->
     <line x1="216" y1="10" x2="214" y2="34" stroke="rgba(255,255,255,0.12)" stroke-width="1.4"/>
     <line x1="340" y1="18" x2="338" y2="40" stroke="rgba(255,255,255,0.12)" stroke-width="1.4"/>
     <line x1="386" y1="38" x2="388" y2="56" stroke="rgba(255,255,255,0.10)" stroke-width="1.4"/>
-    <!-- Door crease + handle -->
     <path d="M140 60 Q250 54 360 57 Q385 58 400 64" stroke="rgba(255,255,255,0.07)" stroke-width="1" fill="none"/>
     <rect x="222" y="61" width="32" height="5" rx="2.5" fill="#080c16" stroke="rgba(255,255,255,0.1)" stroke-width="0.7"/>
     <line x1="214" y1="34" x2="216" y2="82" stroke="rgba(0,0,0,0.4)" stroke-width="1.1"/>
     <line x1="338" y1="40" x2="340" y2="82" stroke="rgba(0,0,0,0.4)" stroke-width="1.1"/>
-    <!-- Engine lid rear vents -->
     <path d="M94 58 Q106 46 120 42 Q134 38 148 36 L146 44 Q134 46 122 52 Q108 60 100 72 L90 80 Z" fill="#151e2e"/>
     <line x1="108" y1="52" x2="130" y2="46" stroke="rgba(255,255,255,0.09)" stroke-width="1.3" stroke-linecap="round"/>
     <line x1="104" y1="58" x2="128" y2="52" stroke="rgba(255,255,255,0.09)" stroke-width="1.3" stroke-linecap="round"/>
     <line x1="100" y1="64" x2="124" y2="58" stroke="rgba(255,255,255,0.09)" stroke-width="1.3" stroke-linecap="round"/>
-    <!-- Ducktail spoiler -->
     <path d="M90 40 Q100 34 116 33 Q130 32 140 36 L136 42 Q124 38 112 40 Q102 42 96 46 Z" fill="#161e30" stroke="rgba(0,230,118,0.22)" stroke-width="0.9"/>
-    <!-- Front hood -->
     <path d="M344 42 Q366 44 384 56 Q394 64 398 80 L380 80 Q376 70 366 62 Q354 52 340 48 Z" fill="#1e2a3c" stroke="rgba(255,255,255,0.05)" stroke-width="0.7"/>
-    <!-- Headlight -->
     <path d="M398 62 Q404 54 412 52 Q420 50 424 56 Q428 62 426 70 Q424 76 416 78 Q406 79 400 73 Z" fill="#070b16" stroke="rgba(150,165,195,0.28)" stroke-width="0.8"/>
     <ellipse cx="412" cy="65" rx="8" ry="6" fill="url(#cHd)" opacity="0.9"/>
     <ellipse cx="412" cy="65" rx="4" ry="3.5" fill="rgba(255,255,210,0.85)"/>
     <path d="M400 72 Q408 78 418 76 Q424 73 426 69" stroke="rgba(200,225,255,0.8)" stroke-width="1.6" fill="none" stroke-linecap="round"/>
     <path d="M424 54 L490 38 L490 92 L424 76 Z" fill="rgba(255,252,180,0.025)"/>
-    <!-- Tail light -->
     <path d="M82 54 Q75 62 73 72 Q72 80 76 84 L90 82 Q87 74 90 64 Q92 56 98 48 Z" fill="#070b16" stroke="rgba(190,35,35,0.28)" stroke-width="0.8"/>
     <path d="M77 58 Q74 66 74 75" stroke="rgba(225,45,45,0.85)" stroke-width="3" stroke-linecap="round"/>
     <path d="M81 56 Q78 62 78 69" stroke="rgba(225,45,45,0.45)" stroke-width="1.8" stroke-linecap="round"/>
     <path d="M85 53 Q83 57 82 62" stroke="rgba(255,160,35,0.65)" stroke-width="1.8" stroke-linecap="round"/>
-    <!-- Exhausts -->
     <ellipse cx="84" cy="92" rx="5.5" ry="3.5" fill="#060810" stroke="rgba(145,155,180,0.3)" stroke-width="0.9"/>
     <ellipse cx="84" cy="92" rx="3" ry="2" fill="#030508"/>
     <ellipse cx="96" cy="92" rx="5.5" ry="3.5" fill="#060810" stroke="rgba(145,155,180,0.3)" stroke-width="0.9"/>
     <ellipse cx="96" cy="92" rx="3" ry="2" fill="#030508"/>
     <ellipse cx="90" cy="92" rx="15" ry="5" fill="rgba(0,230,118,0.12)" opacity="0.8"/>
-    <!-- Front wheel -->
     <circle cx="388" cy="95" r="22" fill="#040608"/>
     <circle cx="388" cy="95" r="20" fill="url(#cWhl)" stroke="rgba(45,58,85,0.7)" stroke-width="1.1"/>
     <circle cx="388" cy="95" r="18" fill="none" stroke="rgba(30,40,62,0.8)" stroke-width="2.2"/>
@@ -443,7 +405,6 @@
     <line x1="380" y1="101" x2="384" y2="97" stroke="rgba(130,148,178,0.72)" stroke-width="2" stroke-linecap="round"/>
     <line x1="376" y1="87" x2="382" y2="93" stroke="rgba(130,148,178,0.72)" stroke-width="2" stroke-linecap="round"/>
     <path d="M376 86 Q370 94 375 103 Q377 105 380 103 Q375 94 377 86 Z" fill="rgba(205,40,40,0.82)"/>
-    <!-- Rear wheel -->
     <circle cx="134" cy="95" r="22" fill="#040608"/>
     <circle cx="134" cy="95" r="20" fill="url(#cWhl)" stroke="rgba(45,58,85,0.7)" stroke-width="1.1"/>
     <circle cx="134" cy="95" r="18" fill="none" stroke="rgba(30,40,62,0.8)" stroke-width="2.2"/>
@@ -499,7 +460,7 @@
     <div class="how-grid">
       <div class="steps reveal">
         <div class="step"><div class="step-num">01</div><div><div class="step-title" data-i18n="s1t">Customer arrives</div><div class="step-desc" data-i18n="s1d">Find the customer in seconds or create a new record. Vehicle details, contact info, and full history are right there.</div></div></div>
-        <div class="step"><div class="step-num">02</div><div><div class="step-title" data-i18n="s2t">Open a service card</div><div class="step-desc" data-i18n="s2d">Create a service card for the visit. Add individual jobs to it — each assigned to a technician — and track parts and time as work progresses.</div></div></div>
+        <div class="step"><div class="step-num">02</div><div><div class="step-title" data-i18n="s2t">Open a service card</div><div class="step-desc" data-i18n="s2d">Create a service card for the visit. Add individual jobs to it &#8212; each assigned to a technician &#8212; and track parts and time as work progresses.</div></div></div>
         <div class="step"><div class="step-num">03</div><div><div class="step-title" data-i18n="s3t">Complete the service</div><div class="step-desc" data-i18n="s3d">Log all services provided and parts used. Stock is updated automatically. Job status changes to done.</div></div></div>
         <div class="step"><div class="step-num">04</div><div><div class="step-title" data-i18n="s4t">Send invoice &amp; get paid</div><div class="step-desc" data-i18n="s4d">One click generates a complete invoice from the job data. Customer pays, transaction is recorded. Done.</div></div></div>
       </div>
@@ -528,33 +489,33 @@
     </div>
     <div class="pricing-grid reveal">
       <div class="price-card">
-        <div class="price-tier" data-i18n="pt_solo">Solo</div>
-        <div class="price-target" data-i18n="pt_solo_desc">Up to 3 people</div>
+        <div class="price-tier" data-i18n="pt_basic">Basic</div>
+        <div class="price-target" data-i18n="pt_basic_desc">Everything to get started</div>
         <div class="price-row"><span class="price-cur">&#8364;</span><span class="price-num">30</span></div>
         <div class="price-period" data-i18n="pp_mo">per month</div>
         <div class="price-div"></div>
         <ul class="price-feats">
-          <li><div class="pf-check">&#10003;</div><span data-i18n="pf1_1">Up to 3 team members</span></li>
-          <li><div class="pf-check">&#10003;</div><span data-i18n="pf1_2">Customer &amp; vehicle records</span></li>
-          <li><div class="pf-check">&#10003;</div><span data-i18n="pf1_3">Job &amp; service tracking</span></li>
-          <li><div class="pf-check">&#10003;</div><span data-i18n="pf1_4">Parts inventory</span></li>
-          <li><div class="pf-check">&#10003;</div><span data-i18n="pf1_5">Invoicing</span></li>
+          <li><div class="pf-check">&#10003;</div><span data-i18n="pf1_1">Customer &amp; vehicle records</span></li>
+          <li><div class="pf-check">&#10003;</div><span data-i18n="pf1_2">Job &amp; service tracking</span></li>
+          <li><div class="pf-check">&#10003;</div><span data-i18n="pf1_3">Invoicing</span></li>
+          <li><div class="pf-check">&#10003;</div><span data-i18n="pf1_4">Employee overview</span></li>
+          <li><div class="pf-check">&#10003;</div><span data-i18n="pf1_5">Business reports</span></li>
           <li><div class="pf-check">&#10003;</div><span data-i18n="pf1_6">Email support</span></li>
         </ul>
         <button class="btn-plan" onclick="document.getElementById('contact').scrollIntoView({behavior:'smooth'})" data-i18n="pp_demo">Book a Demo</button>
       </div>
       <div class="price-card pop">
         <div class="pop-badge" data-i18n="pp_pop">Most Popular</div>
-        <div class="price-tier" data-i18n="pt_team">Team</div>
-        <div class="price-target" data-i18n="pt_team_desc">4+ people</div>
+        <div class="price-tier" data-i18n="pt_ext">Extended</div>
+        <div class="price-target" data-i18n="pt_ext_desc">Full power for your garage</div>
         <div class="price-row"><span class="price-cur">&#8364;</span><span class="price-num">70</span></div>
         <div class="price-period" data-i18n="pp_mo">per month</div>
         <div class="price-div"></div>
         <ul class="price-feats">
-          <li><div class="pf-check">&#10003;</div><span data-i18n="pf2_1">Unlimited team members</span></li>
-          <li><div class="pf-check">&#10003;</div><span data-i18n="pf2_2">Everything in Solo</span></li>
-          <li><div class="pf-check">&#10003;</div><span data-i18n="pf2_3">Employee workload view</span></li>
-          <li><div class="pf-check">&#10003;</div><span data-i18n="pf2_4">Advanced reports &amp; analytics</span></li>
+          <li><div class="pf-check">&#10003;</div><span data-i18n="pf2_1">Everything in Basic</span></li>
+          <li><div class="pf-check">&#10003;</div><span data-i18n="pf2_2">Parts &amp; stock inventory</span></li>
+          <li><div class="pf-check">&#10003;</div><span data-i18n="pf2_3">Advanced reports &amp; analytics</span></li>
+          <li><div class="pf-check">&#10003;</div><span data-i18n="pf2_4">Personalised customisation</span></li>
           <li><div class="pf-check">&#10003;</div><span data-i18n="pf2_5">Priority support</span></li>
           <li><div class="pf-check">&#10003;</div><span data-i18n="pf2_6">Onboarding assistance</span></li>
         </ul>
@@ -581,7 +542,29 @@
         </div>
         <div class="form-row">
           <div class="form-field"><label data-i18n="cf_garage">Garage Name</label><input id="cf_garage" type="text" placeholder="AutoServis Praha" maxlength="50"/></div>
-          <div class="form-field"><label data-i18n="cf_team">Team Size</label><input id="cf_team" type="text" placeholder="1&#8211;3 / 4+" maxlength="50"/></div>
+          <div class="form-field">
+            <label><span data-i18n="cf_phone">Phone Number</span><span class="req-star" id="phoneReqStar">*</span></label>
+            <input id="cf_phone" type="tel" placeholder="+420 123 456 789" maxlength="30"/>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-field">
+            <label data-i18n="cf_contact_method">Preferred Contact</label>
+            <select id="cf_contact_method" onchange="updatePhoneRequired()">
+              <option value="email" data-i18n-opt="cm_email">Email</option>
+              <option value="whatsapp" data-i18n-opt="cm_whatsapp">WhatsApp</option>
+              <option value="telegram" data-i18n-opt="cm_telegram">Telegram</option>
+              <option value="phone" data-i18n-opt="cm_phone">Phone</option>
+            </select>
+          </div>
+          <div class="form-field">
+            <label data-i18n="cf_plan">Desired Plan</label>
+            <select id="cf_plan">
+              <option value="basic" data-i18n-opt="pl_basic">Basic &#8212; &#8364;30/mo</option>
+              <option value="extended" data-i18n-opt="pl_extended">Extended &#8212; &#8364;70/mo</option>
+              <option value="undecided" data-i18n-opt="pl_undecided">Not sure yet</option>
+            </select>
+          </div>
         </div>
         <div class="form-field"><label data-i18n="cf_msg">Message</label><textarea id="cf_msg" placeholder="Tell us about your garage..." maxlength="500"></textarea></div>
         <div class="form-msg" id="formMsg"></div>
@@ -619,11 +602,23 @@ function showError(msg) {
   el.textContent = msg;
 }
 
+function updatePhoneRequired() {
+  var method = document.getElementById('cf_contact_method').value;
+  var star = document.getElementById('phoneReqStar');
+  if (method === 'email') {
+    star.classList.remove('visible');
+  } else {
+    star.classList.add('visible');
+  }
+}
+
 function submitForm() {
   var name    = document.getElementById('cf_name').value.trim();
   var email   = document.getElementById('cf_email').value.trim();
   var garage  = document.getElementById('cf_garage').value.trim();
-  var team    = document.getElementById('cf_team').value.trim();
+  var plan    = document.getElementById('cf_plan').value;
+  var contactMethod = document.getElementById('cf_contact_method').value;
+  var phone   = document.getElementById('cf_phone').value.trim();
   var message = document.getElementById('cf_msg').value.trim();
   var btn     = document.getElementById('formBtn');
   var msg     = document.getElementById('formMsg');
@@ -633,18 +628,21 @@ function submitForm() {
   msg.className = 'form-msg';
   msg.textContent = '';
 
-  // Required
+  // Required fields
   if (!name) { showError(t.val_name_req); return; }
   if (!email) { showError(t.val_email_req); return; }
 
   // Email format
   if (!validateEmail(email)) { showError(t.val_email_fmt); return; }
 
+  // Phone required when contact method is not email
+  if (contactMethod !== 'email' && !phone) { showError(t.val_phone_req); return; }
+
   // Length limits
   if (name.length > 50)    { showError(t.val_name_len);    return; }
   if (email.length > 50)   { showError(t.val_email_len);   return; }
   if (garage.length > 50)  { showError(t.val_garage_len);  return; }
-  if (team.length > 50)    { showError(t.val_team_len);    return; }
+  if (phone.length > 30)   { showError(t.val_phone_len);   return; }
   if (message.length > 500){ showError(t.val_msg_len);     return; }
 
   btn.disabled = true;
@@ -653,13 +651,15 @@ function submitForm() {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
-      name:         name,
-      email:        email,
-      garage:       garage,
-      team_size:    team,
-      message:      message,
-      submitted_at: new Date().toISOString(),
-      language:     curLang
+      name:            name,
+      email:           email,
+      garage:          garage,
+      plan:            plan,
+      contact_method:  contactMethod,
+      phone:           phone,
+      message:         message,
+      submitted_at:    new Date().toISOString(),
+      language:        curLang
     })
   })
   .then(function(res) {
@@ -669,8 +669,11 @@ function submitForm() {
       document.getElementById('cf_name').value    = '';
       document.getElementById('cf_email').value   = '';
       document.getElementById('cf_garage').value  = '';
-      document.getElementById('cf_team').value    = '';
+      document.getElementById('cf_plan').value    = 'basic';
+      document.getElementById('cf_contact_method').value = 'email';
+      document.getElementById('cf_phone').value   = '';
       document.getElementById('cf_msg').value     = '';
+      updatePhoneRequired();
     } else {
       throw new Error('Server error');
     }
@@ -710,24 +713,28 @@ var T = {
     kpi1:"Jobs today", kpi2:"Completed", kpi3:"Revenue",
     pr_label:"Pricing", pr_title:"Simple pricing. No surprises.",
     pr_sub:"Two plans built for small garages. Pay monthly, cancel any time.",
-    pt_solo:"Solo", pt_solo_desc:"Up to 3 people", pp_mo:"per month",
-    pf1_1:"Up to 3 team members", pf1_2:"Customer & vehicle records", pf1_3:"Job & service tracking", pf1_4:"Parts inventory", pf1_5:"Invoicing", pf1_6:"Email support",
+    pt_basic:"Basic", pt_basic_desc:"Everything to get started", pp_mo:"per month",
+    pf1_1:"Customer & vehicle records", pf1_2:"Job & service tracking", pf1_3:"Invoicing", pf1_4:"Employee overview", pf1_5:"Business reports", pf1_6:"Email support",
     pp_demo:"Book a Demo",
-    pt_team:"Team", pt_team_desc:"4+ people", pp_pop:"Most Popular",
-    pf2_1:"Unlimited team members", pf2_2:"Everything in Solo", pf2_3:"Employee workload view", pf2_4:"Advanced reports & analytics", pf2_5:"Priority support", pf2_6:"Onboarding assistance",
+    pt_ext:"Extended", pt_ext_desc:"Full power for your garage", pp_pop:"Most Popular",
+    pf2_1:"Everything in Basic", pf2_2:"Parts & stock inventory", pf2_3:"Advanced reports & analytics", pf2_4:"Personalised customisation", pf2_5:"Priority support", pf2_6:"Onboarding assistance",
     pr_note:"All plans include a 14-day free trial. No credit card required.",
     ct_label:"Contact", ct_title:"Let\u2019s talk.", ct_sub:"Book a free demo or ask us anything. We respond within 24 hours in Czech, English, or Russian.",
-    cf_name:"Full Name", cf_email:"Email", cf_garage:"Garage Name", cf_team:"Team Size", cf_msg:"Message", cf_send:"Send Message",
+    cf_name:"Full Name", cf_email:"Email", cf_garage:"Garage Name",
+    cf_contact_method:"Preferred Contact", cm_email:"Email", cm_whatsapp:"WhatsApp", cm_telegram:"Telegram", cm_phone:"Phone",
+    cf_plan:"Desired Plan", pl_basic:"Basic \u2014 \u20ac30/mo", pl_extended:"Extended \u2014 \u20ac70/mo", pl_undecided:"Not sure yet",
+    cf_phone:"Phone Number", cf_msg:"Message", cf_send:"Send Message",
     cf_err_required:"Please fill in your name and email.",
     cf_success:"Message sent! We\u2019ll be in touch within 24 hours.",
     cf_error:"Something went wrong. Please try again or email us directly.",
     val_name_req:"Please enter your full name.",
     val_email_req:"Please enter your email address.",
     val_email_fmt:"Please enter a valid email address.",
+    val_phone_req:"Phone number is required for your selected contact method.",
     val_name_len:"Name must be 50 characters or fewer.",
     val_email_len:"Email must be 50 characters or fewer.",
     val_garage_len:"Garage name must be 50 characters or fewer.",
-    val_team_len:"Team size must be 50 characters or fewer.",
+    val_phone_len:"Phone number must be 30 characters or fewer.",
     val_msg_len:"Message must be 500 characters or fewer.",
     ci_email:"Email", ci_resp:"Response Time", ci_resp_v:"Within 24 hours", ci_lang:"Languages", ci_demo:"Free Demo", ci_demo_v:"30-minute walkthrough, no pressure",
     footer_copy:"\u00a9 2026 GarageOS. All rights reserved.", footer_privacy:"Privacy Policy", footer_terms:"Terms of Use"
@@ -753,29 +760,33 @@ var T = {
     s1t:"Z\u00e1kazn\u00edk p\u0159ijede", s1d:"Najd\u011bte z\u00e1kazn\u00edka za sekundy nebo vytvo\u0159te nov\u00fd z\u00e1znam.",
     s2t:"Otev\u0159ete servisn\u00ed kartu", s2d:"Vytvo\u0159te servisn\u00ed kartu pro n\u00e1v\u0161t\u011bvu. P\u0159idejte jednotliv\u00e9 pr\u00e1ce \u2014 ka\u017ed\u00e1 p\u0159i\u0159azena technikovi \u2014 a sledujte d\u00edly a \u010das.",
     s3t:"Dokon\u010dete servis", s3d:"Zaznamenejte v\u0161echny poskytnut\u00e9 slu\u017eby a pou\u017eit\u00e9 d\u00edly. Sklad se aktualizuje automaticky.",
-    s4t:"Odešlete fakturu a p\u0159ijm\u011bte platbu", s4d:"Jedin\u00fdm kliknut\u00edm vygenerujete kompletní fakturu. Z\u00e1kazn\u00edk zaplatí, transakce je zaznamen\u00e1na.",
+    s4t:"Ode\u0161lete fakturu a p\u0159ijm\u011bte platbu", s4d:"Jedin\u00fdm kliknut\u00edm vygenerujete kompletn\u00ed fakturu. Z\u00e1kazn\u00edk zaplat\u00ed, transakce je zaznamen\u00e1na.",
     mock_title:"Dne\u0161n\u00ed zak\u00e1zky", tag_done:"Dokon\u010deno", tag_prog:"Prob\u00edh\u00e1", tag_wait:"\u010cek\u00e1",
     kpi1:"Zak\u00e1zky dnes", kpi2:"Dokon\u010deno", kpi3:"Tr\u017eby",
     pr_label:"Cen\u00edk", pr_title:"Jednoduch\u00e9 ceny. \u017d\u00e1dn\u00e1 p\u0159ekvapen\u00ed.",
     pr_sub:"Dva pl\u00e1ny pro mal\u00e9 autoservisy. Pla\u0165te m\u011bs\u00ed\u010dn\u011b, zru\u0161te kdykoliv.",
-    pt_solo:"Solo", pt_solo_desc:"A\u017e 3 osoby", pp_mo:"za m\u011bs\u00edc",
-    pf1_1:"A\u017e 3 \u010dlenov\u00e9 t\u00fdmu", pf1_2:"Z\u00e1znamy z\u00e1kazn\u00edk\u016f a vozidel", pf1_3:"Sledov\u00e1n\u00ed zak\u00e1zek", pf1_4:"Sklad d\u00edl\u016f", pf1_5:"Fakturace", pf1_6:"E-mailov\u00e1 podpora",
+    pt_basic:"Z\u00e1kladn\u00ed", pt_basic_desc:"V\u0161e pro za\u010d\u00e1tek", pp_mo:"za m\u011bs\u00edc",
+    pf1_1:"Z\u00e1znamy z\u00e1kazn\u00edk\u016f a vozidel", pf1_2:"Sledov\u00e1n\u00ed zak\u00e1zek", pf1_3:"Fakturace", pf1_4:"P\u0159ehled zam\u011bstnanc\u016f", pf1_5:"Obchodn\u00ed reporty", pf1_6:"E-mailov\u00e1 podpora",
     pp_demo:"Rezervovat demo",
-    pt_team:"T\u00fdm", pt_team_desc:"4+ osoby", pp_pop:"Nejobл\u00edben\u011bj\u0161\u00ed",
-    pf2_1:"Neomezen\u00fd po\u010det \u010dlen\u016f t\u00fdmu", pf2_2:"V\u0161e ze Solo pl\u00e1nu", pf2_3:"P\u0159ehled vyt\u00ed\u017een\u00ed zam\u011bstnanc\u016f", pf2_4:"Pokro\u010dil\u00e9 reporty a analytika", pf2_5:"Prioritn\u00ed podpora", pf2_6:"Pomoc s n\u00e1stupem",
+    pt_ext:"Roz\u0161\u00ed\u0159en\u00fd", pt_ext_desc:"Pln\u00fd v\u00fdkon pro v\u00e1\u0161 servis", pp_pop:"Nejoblíbenější",
+    pf2_1:"V\u0161e ze Z\u00e1kladn\u00edho pl\u00e1nu", pf2_2:"Sklad d\u00edl\u016f a z\u00e1sob", pf2_3:"Pokro\u010dil\u00e9 reporty a analytika", pf2_4:"Personalizovan\u00e9 \u00fapravy", pf2_5:"Prioritn\u00ed podpora", pf2_6:"Pomoc s n\u00e1stupem",
     pr_note:"V\u0161echny pl\u00e1ny zahrnuj\u00ed 14denn\u00ed bezplatnou zku\u0161ebn\u00ed dobu.",
     ct_label:"Kontakt", ct_title:"Pojďme si promluvit.", ct_sub:"Rezervujte si bezplatn\u00e9 demo nebo se n\u00e1s zeptejte na cokoliv.",
-    cf_name:"Cel\u00e9 jm\u00e9no", cf_email:"E-mail", cf_garage:"N\u00e1zev servisu", cf_team:"Velikost t\u00fdmu", cf_msg:"Zpr\u00e1va", cf_send:"Odeslat zpr\u00e1vu",
+    cf_name:"Cel\u00e9 jm\u00e9no", cf_email:"E-mail", cf_garage:"N\u00e1zev servisu",
+    cf_contact_method:"Prefer. kontakt", cm_email:"E-mail", cm_whatsapp:"WhatsApp", cm_telegram:"Telegram", cm_phone:"Telefon",
+    cf_plan:"Po\u017eadovan\u00fd pl\u00e1n", pl_basic:"Z\u00e1kladn\u00ed \u2014 \u20ac30/m\u011bs.", pl_extended:"Roz\u0161\u00ed\u0159en\u00fd \u2014 \u20ac70/m\u011bs.", pl_undecided:"Je\u0161t\u011b nev\u00edm",
+    cf_phone:"Telefonn\u00ed \u010d\u00edslo", cf_msg:"Zpr\u00e1va", cf_send:"Odeslat zpr\u00e1vu",
     cf_err_required:"Vypl\u0148te pros\u00edm jm\u00e9no a e-mail.",
     cf_success:"Zpr\u00e1va ode\u0161lana! Ozveme se do 24 hodin.",
     cf_error:"N\u011bco se pokazilo. Zkuste to znovu nebo n\u00e1s kontaktujte p\u0159\u00edmo.",
     val_name_req:"Zadejte pros\u00edm sv\u00e9 cel\u00e9 jm\u00e9no.",
     val_email_req:"Zadejte pros\u00edm svoji e-mailovou adresu.",
     val_email_fmt:"Zadejte pros\u00edm platnou e-mailovou adresu.",
+    val_phone_req:"Telefonn\u00ed \u010d\u00edslo je povinn\u00e9 pro zvolen\u00fd zp\u016fsob kontaktu.",
     val_name_len:"Jm\u00e9no mus\u00ed m\u00edt nejv\u00fd\u0161e 50 znak\u016f.",
     val_email_len:"E-mail mus\u00ed m\u00edt nejv\u00fd\u0161e 50 znak\u016f.",
     val_garage_len:"N\u00e1zev servisu mus\u00ed m\u00edt nejv\u00fd\u0161e 50 znak\u016f.",
-    val_team_len:"Velikost t\u00fdmu mus\u00ed m\u00edt nejv\u00fd\u0161e 50 znak\u016f.",
+    val_phone_len:"Telefonn\u00ed \u010d\u00edslo mus\u00ed m\u00edt nejv\u00fd\u0161e 30 znak\u016f.",
     val_msg_len:"Zpr\u00e1va mus\u00ed m\u00edt nejv\u00fd\u0161e 500 znak\u016f.",
     ci_email:"E-mail", ci_resp:"Doba odezvy", ci_resp_v:"Do 24 hodin", ci_lang:"Jazyky", ci_demo:"Demo zdarma", ci_demo_v:"30 minut, bez z\u00e1vazk\u016f",
     footer_copy:"\u00a9 2026 GarageOS. V\u0161echna pr\u00e1va vyhrazena.", footer_privacy:"Z\u00e1sady ochrany soukrom\u00ed", footer_terms:"Podm\u00ednky pou\u017eit\u00ed"
@@ -806,24 +817,28 @@ var T = {
     kpi1:"\u0417\u0430\u043a\u0430\u0437\u043e\u0432 \u0441\u0435\u0433\u043e\u0434\u043d\u044f", kpi2:"\u0412\u044b\u043f\u043e\u043b\u043d\u0435\u043d\u043e", kpi3:"\u0412\u044b\u0440\u0443\u0447\u043a\u0430",
     pr_label:"\u0426\u0435\u043d\u044b", pr_title:"\u041f\u0440\u043e\u0441\u0442\u044b\u0435 \u0446\u0435\u043d\u044b. \u041d\u0438\u043a\u0430\u043a\u0438\u0445 \u0441\u044e\u0440\u043f\u0440\u0438\u0437\u043e\u0432.",
     pr_sub:"\u0414\u0432\u0430 \u0442\u0430\u0440\u0438\u0444\u0430 \u0434\u043b\u044f \u043d\u0435\u0431\u043e\u043b\u044c\u0448\u0438\u0445 \u0441\u0435\u0440\u0432\u0438\u0441\u043e\u0432. \u041f\u043b\u0430\u0442\u0438\u0442\u0435 \u0435\u0436\u0435\u043c\u0435\u0441\u044f\u0447\u043d\u043e, \u043e\u0442\u043c\u0435\u043d\u044f\u0439\u0442\u0435 \u0432 \u043b\u044e\u0431\u043e\u0435 \u0432\u0440\u0435\u043c\u044f.",
-    pt_solo:"\u0421\u043e\u043b\u043e", pt_solo_desc:"\u0414\u043e 3 \u0447\u0435\u043b\u043e\u0432\u0435\u043a", pp_mo:"\u0432 \u043c\u0435\u0441\u044f\u0446",
-    pf1_1:"\u0414\u043e 3 \u0441\u043e\u0442\u0440\u0443\u0434\u043d\u0438\u043a\u043e\u0432", pf1_2:"\u0411\u0430\u0437\u0430 \u043a\u043b\u0438\u0435\u043d\u0442\u043e\u0432 \u0438 \u0430\u0432\u0442\u043e\u043c\u043e\u0431\u0438\u043b\u0435\u0439", pf1_3:"\u0423\u0447\u0451\u0442 \u0437\u0430\u043a\u0430\u0437\u043e\u0432", pf1_4:"\u0421\u043a\u043b\u0430\u0434 \u0437\u0430\u043f\u0447\u0430\u0441\u0442\u0435\u0439", pf1_5:"\u0412\u044b\u0441\u0442\u0430\u0432\u043b\u0435\u043d\u0438\u0435 \u0441\u0447\u0435\u0442\u043e\u0432", pf1_6:"Email \u043f\u043e\u0434\u0434\u0435\u0440\u0436\u043a\u0430",
+    pt_basic:"\u0411\u0430\u0437\u043e\u0432\u044b\u0439", pt_basic_desc:"\u0412\u0441\u0451 \u0434\u043b\u044f \u0441\u0442\u0430\u0440\u0442\u0430", pp_mo:"\u0432 \u043c\u0435\u0441\u044f\u0446",
+    pf1_1:"\u0411\u0430\u0437\u0430 \u043a\u043b\u0438\u0435\u043d\u0442\u043e\u0432 \u0438 \u0430\u0432\u0442\u043e\u043c\u043e\u0431\u0438\u043b\u0435\u0439", pf1_2:"\u0423\u0447\u0451\u0442 \u0437\u0430\u043a\u0430\u0437\u043e\u0432", pf1_3:"\u0412\u044b\u0441\u0442\u0430\u0432\u043b\u0435\u043d\u0438\u0435 \u0441\u0447\u0435\u0442\u043e\u0432", pf1_4:"\u041e\u0431\u0437\u043e\u0440 \u0441\u043e\u0442\u0440\u0443\u0434\u043d\u0438\u043a\u043e\u0432", pf1_5:"\u0411\u0438\u0437\u043d\u0435\u0441-\u043e\u0442\u0447\u0451\u0442\u044b", pf1_6:"Email \u043f\u043e\u0434\u0434\u0435\u0440\u0436\u043a\u0430",
     pp_demo:"\u0417\u0430\u043a\u0430\u0437\u0430\u0442\u044c \u0434\u0435\u043c\u043e",
-    pt_team:"\u041a\u043e\u043c\u0430\u043d\u0434\u0430", pt_team_desc:"4+ \u0447\u0435\u043b\u043e\u0432\u0435\u043a", pp_pop:"\u0421\u0430\u043c\u044b\u0439 \u043f\u043e\u043f\u0443\u043b\u044f\u0440\u043d\u044b\u0439",
-    pf2_1:"\u041d\u0435\u043e\u0433\u0440\u0430\u043d\u0438\u0447\u0435\u043d\u043d\u043e\u0435 \u043a\u043e\u043b-\u0432\u043e \u0441\u043e\u0442\u0440\u0443\u0434\u043d\u0438\u043a\u043e\u0432", pf2_2:"\u0412\u0441\u0451 \u0438\u0437 \u0442\u0430\u0440\u0438\u0444\u0430 \u0421\u043e\u043b\u043e", pf2_3:"\u041e\u0431\u0437\u043e\u0440 \u0437\u0430\u0433\u0440\u0443\u0436\u0435\u043d\u043d\u043e\u0441\u0442\u0438", pf2_4:"\u0420\u0430\u0441\u0448\u0438\u0440\u0435\u043d\u043d\u044b\u0435 \u043e\u0442\u0447\u0451\u0442\u044b", pf2_5:"\u041f\u0440\u0438\u043e\u0440\u0438\u0442\u0435\u0442\u043d\u0430\u044f \u043f\u043e\u0434\u0434\u0435\u0440\u0436\u043a\u0430", pf2_6:"\u041f\u043e\u043c\u043e\u0449\u044c \u0432 \u043d\u0430\u0447\u0430\u043b\u0435",
+    pt_ext:"\u0420\u0430\u0441\u0448\u0438\u0440\u0435\u043d\u043d\u044b\u0439", pt_ext_desc:"\u041f\u043e\u043b\u043d\u0430\u044f \u043c\u043e\u0449\u043d\u043e\u0441\u0442\u044c \u0434\u043b\u044f \u0441\u0435\u0440\u0432\u0438\u0441\u0430", pp_pop:"\u0421\u0430\u043c\u044b\u0439 \u043f\u043e\u043f\u0443\u043b\u044f\u0440\u043d\u044b\u0439",
+    pf2_1:"\u0412\u0441\u0451 \u0438\u0437 \u0411\u0430\u0437\u043e\u0432\u043e\u0433\u043e", pf2_2:"\u0421\u043a\u043b\u0430\u0434 \u0437\u0430\u043f\u0447\u0430\u0441\u0442\u0435\u0439", pf2_3:"\u0420\u0430\u0441\u0448\u0438\u0440\u0435\u043d\u043d\u044b\u0435 \u043e\u0442\u0447\u0451\u0442\u044b \u0438 \u0430\u043d\u0430\u043b\u0438\u0442\u0438\u043a\u0430", pf2_4:"\u041f\u0435\u0440\u0441\u043e\u043d\u0430\u043b\u044c\u043d\u0430\u044f \u043d\u0430\u0441\u0442\u0440\u043e\u0439\u043a\u0430", pf2_5:"\u041f\u0440\u0438\u043e\u0440\u0438\u0442\u0435\u0442\u043d\u0430\u044f \u043f\u043e\u0434\u0434\u0435\u0440\u0436\u043a\u0430", pf2_6:"\u041f\u043e\u043c\u043e\u0449\u044c \u0432 \u043d\u0430\u0447\u0430\u043b\u0435",
     pr_note:"\u0412\u0441\u0435 \u0442\u0430\u0440\u0438\u0444\u044b \u0432\u043a\u043b\u044e\u0447\u0430\u044e\u0442 14-\u0434\u043d\u0435\u0432\u043d\u044b\u0439 \u0431\u0435\u0441\u043f\u043b\u0430\u0442\u043d\u044b\u0439 \u043f\u0435\u0440\u0438\u043e\u0434.",
     ct_label:"\u041a\u043e\u043d\u0442\u0430\u043a\u0442", ct_title:"\u0414\u0430\u0432\u0430\u0439\u0442\u0435 \u043f\u043e\u0433\u043e\u0432\u043e\u0440\u0438\u043c.", ct_sub:"\u0417\u0430\u043a\u0430\u0436\u0438\u0442\u0435 \u0431\u0435\u0441\u043f\u043b\u0430\u0442\u043d\u043e\u0435 \u0434\u0435\u043c\u043e \u0438\u043b\u0438 \u0437\u0430\u0434\u0430\u0439\u0442\u0435 \u043b\u044e\u0431\u043e\u0439 \u0432\u043e\u043f\u0440\u043e\u0441.",
-    cf_name:"\u041f\u043e\u043b\u043d\u043e\u0435 \u0438\u043c\u044f", cf_email:"E-mail", cf_garage:"\u041d\u0430\u0437\u0432\u0430\u043d\u0438\u0435 \u0441\u0435\u0440\u0432\u0438\u0441\u0430", cf_team:"\u0420\u0430\u0437\u043c\u0435\u0440 \u043a\u043e\u043c\u0430\u043d\u0434\u044b", cf_msg:"\u0421\u043e\u043e\u0431\u0449\u0435\u043d\u0438\u0435", cf_send:"\u041e\u0442\u043f\u0440\u0430\u0432\u0438\u0442\u044c \u0441\u043e\u043e\u0431\u0449\u0435\u043d\u0438\u0435",
+    cf_name:"\u041f\u043e\u043b\u043d\u043e\u0435 \u0438\u043c\u044f", cf_email:"E-mail", cf_garage:"\u041d\u0430\u0437\u0432\u0430\u043d\u0438\u0435 \u0441\u0435\u0440\u0432\u0438\u0441\u0430",
+    cf_contact_method:"\u0421\u043f\u043e\u0441\u043e\u0431 \u0441\u0432\u044f\u0437\u0438", cm_email:"E-mail", cm_whatsapp:"WhatsApp", cm_telegram:"Telegram", cm_phone:"\u0422\u0435\u043b\u0435\u0444\u043e\u043d",
+    cf_plan:"\u0416\u0435\u043b\u0430\u0435\u043c\u044b\u0439 \u0442\u0430\u0440\u0438\u0444", pl_basic:"\u0411\u0430\u0437\u043e\u0432\u044b\u0439 \u2014 \u20ac30/\u043c\u0435\u0441.", pl_extended:"\u0420\u0430\u0441\u0448\u0438\u0440\u0435\u043d\u043d\u044b\u0439 \u2014 \u20ac70/\u043c\u0435\u0441.", pl_undecided:"\u0415\u0449\u0451 \u043d\u0435 \u0440\u0435\u0448\u0438\u043b",
+    cf_phone:"\u041d\u043e\u043c\u0435\u0440 \u0442\u0435\u043b\u0435\u0444\u043e\u043d\u0430", cf_msg:"\u0421\u043e\u043e\u0431\u0449\u0435\u043d\u0438\u0435", cf_send:"\u041e\u0442\u043f\u0440\u0430\u0432\u0438\u0442\u044c \u0441\u043e\u043e\u0431\u0449\u0435\u043d\u0438\u0435",
     cf_err_required:"\u041f\u043e\u0436\u0430\u043b\u0443\u0439\u0441\u0442\u0430, \u0443\u043a\u0430\u0436\u0438\u0442\u0435 \u0438\u043c\u044f \u0438 e-mail.",
     cf_success:"\u0421\u043e\u043e\u0431\u0449\u0435\u043d\u0438\u0435 \u043e\u0442\u043f\u0440\u0430\u0432\u043b\u0435\u043d\u043e! \u041c\u044b \u0441\u0432\u044f\u0436\u0435\u043c\u0441\u044f \u0441 \u0432\u0430\u043c\u0438 \u0432 \u0442\u0435\u0447\u0435\u043d\u0438\u0435 24 \u0447\u0430\u0441\u043e\u0432.",
     cf_error:"\u0427\u0442\u043e-\u0442\u043e \u043f\u043e\u0448\u043b\u043e \u043d\u0435 \u0442\u0430\u043a. \u041f\u043e\u043f\u0440\u043e\u0431\u0443\u0439\u0442\u0435 \u0435\u0449\u0451 \u0440\u0430\u0437 \u0438\u043b\u0438 \u043d\u0430\u043f\u0438\u0448\u0438\u0442\u0435 \u043d\u0430\u043c \u043d\u0430\u043f\u0440\u044f\u043c\u0443\u044e.",
     val_name_req:"\u041f\u043e\u0436\u0430\u043b\u0443\u0439\u0441\u0442\u0430, \u0432\u0432\u0435\u0434\u0438\u0442\u0435 \u0432\u0430\u0448\u0435 \u043f\u043e\u043b\u043d\u043e\u0435 \u0438\u043c\u044f.",
     val_email_req:"\u041f\u043e\u0436\u0430\u043b\u0443\u0439\u0441\u0442\u0430, \u0432\u0432\u0435\u0434\u0438\u0442\u0435 \u0430\u0434\u0440\u0435\u0441 \u044d\u043b\u0435\u043a\u0442\u0440\u043e\u043d\u043d\u043e\u0439 \u043f\u043e\u0447\u0442\u044b.",
     val_email_fmt:"\u041f\u043e\u0436\u0430\u043b\u0443\u0439\u0441\u0442\u0430, \u0432\u0432\u0435\u0434\u0438\u0442\u0435 \u043a\u043e\u0440\u0440\u0435\u043a\u0442\u043d\u044b\u0439 e-mail.",
+    val_phone_req:"\u041d\u043e\u043c\u0435\u0440 \u0442\u0435\u043b\u0435\u0444\u043e\u043d\u0430 \u043e\u0431\u044f\u0437\u0430\u0442\u0435\u043b\u0435\u043d \u0434\u043b\u044f \u0432\u044b\u0431\u0440\u0430\u043d\u043d\u043e\u0433\u043e \u0441\u043f\u043e\u0441\u043e\u0431\u0430 \u0441\u0432\u044f\u0437\u0438.",
     val_name_len:"\u0418\u043c\u044f \u0434\u043e\u043b\u0436\u043d\u043e \u0441\u043e\u0434\u0435\u0440\u0436\u0430\u0442\u044c \u043d\u0435 \u0431\u043e\u043b\u0435\u0435 50 \u0441\u0438\u043c\u0432\u043e\u043b\u043e\u0432.",
     val_email_len:"E-mail \u0434\u043e\u043b\u0436\u0435\u043d \u0441\u043e\u0434\u0435\u0440\u0436\u0430\u0442\u044c \u043d\u0435 \u0431\u043e\u043b\u0435\u0435 50 \u0441\u0438\u043c\u0432\u043e\u043b\u043e\u0432.",
     val_garage_len:"\u041d\u0430\u0437\u0432\u0430\u043d\u0438\u0435 \u0441\u0435\u0440\u0432\u0438\u0441\u0430 \u0434\u043e\u043b\u0436\u043d\u043e \u0441\u043e\u0434\u0435\u0440\u0436\u0430\u0442\u044c \u043d\u0435 \u0431\u043e\u043b\u0435\u0435 50 \u0441\u0438\u043c\u0432\u043e\u043b\u043e\u0432.",
-    val_team_len:"\u0420\u0430\u0437\u043c\u0435\u0440 \u043a\u043e\u043c\u0430\u043d\u0434\u044b \u0434\u043e\u043b\u0436\u0435\u043d \u0441\u043e\u0434\u0435\u0440\u0436\u0430\u0442\u044c \u043d\u0435 \u0431\u043e\u043b\u0435\u0435 50 \u0441\u0438\u043c\u0432\u043e\u043b\u043e\u0432.",
+    val_phone_len:"\u041d\u043e\u043c\u0435\u0440 \u0442\u0435\u043b\u0435\u0444\u043e\u043d\u0430 \u0434\u043e\u043b\u0436\u0435\u043d \u0441\u043e\u0434\u0435\u0440\u0436\u0430\u0442\u044c \u043d\u0435 \u0431\u043e\u043b\u0435\u0435 30 \u0441\u0438\u043c\u0432\u043e\u043b\u043e\u0432.",
     val_msg_len:"\u0421\u043e\u043e\u0431\u0449\u0435\u043d\u0438\u0435 \u0434\u043e\u043b\u0436\u043d\u043e \u0441\u043e\u0434\u0435\u0440\u0436\u0430\u0442\u044c \u043d\u0435 \u0431\u043e\u043b\u0435\u0435 500 \u0441\u0438\u043c\u0432\u043e\u043b\u043e\u0432.",
     ci_email:"E-mail", ci_resp:"\u0412\u0440\u0435\u043c\u044f \u043e\u0442\u0432\u0435\u0442\u0430", ci_resp_v:"\u0412 \u0442\u0435\u0447\u0435\u043d\u0438\u0435 24 \u0447\u0430\u0441\u043e\u0432", ci_lang:"\u042f\u0437\u044b\u043a\u0438", ci_demo:"\u0414\u0435\u043c\u043e \u0431\u0435\u0441\u043f\u043b\u0430\u0442\u043d\u043e", ci_demo_v:"30 \u043c\u0438\u043d\u0443\u0442, \u0431\u0435\u0437 \u043e\u0431\u044f\u0437\u0430\u0442\u0435\u043b\u044c\u0441\u0442\u0432",
     footer_copy:"\u00a9 2026 GarageOS. \u0412\u0441\u0435 \u043f\u0440\u0430\u0432\u0430 \u0437\u0430\u0449\u0438\u0449\u0435\u043d\u044b.", footer_privacy:"\u041f\u043e\u043b\u0438\u0442\u0438\u043a\u0430 \u043a\u043e\u043d\u0444\u0438\u0434\u0435\u043d\u0446\u0438\u0430\u043b\u044c\u043d\u043e\u0441\u0442\u0438", footer_terms:"\u0423\u0441\u043b\u043e\u0432\u0438\u044f \u0438\u0441\u043f\u043e\u043b\u044c\u0437\u043e\u0432\u0430\u043d\u0438\u044f"
@@ -839,6 +854,11 @@ function applyLang(lang) {
   document.querySelectorAll('[data-i18n]').forEach(function(el) {
     var k = el.getAttribute('data-i18n');
     if (t[k] !== undefined) el.innerHTML = t[k];
+  });
+  // Update select options
+  document.querySelectorAll('option[data-i18n-opt]').forEach(function(opt) {
+    var k = opt.getAttribute('data-i18n-opt');
+    if (t[k] !== undefined) opt.textContent = t[k];
   });
   document.getElementById('langCur').textContent = lang.toUpperCase();
   document.querySelectorAll('.lang-opt').forEach(function(o) {
@@ -935,6 +955,9 @@ function onScroll() {
 window.addEventListener('scroll', onScroll, {passive: true});
 window.addEventListener('resize', onScroll);
 onScroll();
+
+// Init phone required state
+updatePhoneRequired();
 </script>
 </body>
 </html>
